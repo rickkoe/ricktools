@@ -1,0 +1,1 @@
+curl -k "https://ds8hmc1.esilabs.com:8452/api/v1/hosts" -X GET -H "X-Auth-Token: 46ca9601bd454af499d5b1aeb660711f" 

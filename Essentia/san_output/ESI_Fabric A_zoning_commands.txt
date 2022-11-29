@@ -1,0 +1,31 @@
+### ALIAS COMMANDS FOR FABRIC A
+alicreate "esx60_hba1", "10:00:00:90:fa:c3:5f:ca"
+alicreate "esx61_hba1", "10:00:00:90:fa:c3:16:19"
+alicreate "esx62_hba1", "10:00:00:90:fa:c3:15:04"
+alicreate "esx63_hba1", "10:00:00:90:fa:c3:16:6f"
+alicreate "esx64_hba1", "10:00:00:90:fa:c3:60:cd"
+alicreate "esx65_hba1", "10:00:00:90:fa:c3:15:af"
+
+### ZONE COMMANDS FOR FABRIC A
+zoneadd --peerzone peerzone_fs9200_cluster1 -members "icas02-disk1;icas02-disk3"
+zoneadd --peerzone peerzone_icas_tape -members "icas02-tape1"
+
+### ZONE CONFIG COMMANDS FOR FABRIC A
+cfgadd "fabric_a_zone_config", "peerzone_fs9200_cluster1;peerzone_icas_tape"
+cfgenable "fabric_a_zone_config"
+
+####################################################################
+#                        BROCADE CHEATSHEET                        #
+####################################################################
+### SHOW SWITCH INFORMATION AND PORTS
+  switchshow
+### SHOW EFFECTIVE ZONE CONFIG NAME
+  cfgshow | grep -A 1 Effective
+### SHOW PENDING ZONING CHANGES THAT HAVE NOT BEEN SAVED TO FABRIC
+  cfgshow --transdiffsonly
+### SHOW ZONING WITH "*" ON MEMBERS THAT ARE NOT LOGGED INTO THE FABRIC
+  zoneshow --validate
+### SHOW PENDING TRANSACTION TOKEN
+  cfgtransshow
+### ABORT PENDING ZONING TRANSACTION
+  cfgtransabort

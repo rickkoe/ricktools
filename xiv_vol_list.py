@@ -8,9 +8,9 @@ from openpyxl.styles import PatternFill, colors, Font, Color
 from openpyxl.worksheet.table import Table, TableStyleInfo
 from openpyxl.utils import get_column_letter
 
-customer_name = input('Enter customer name: ')
+customer_name = input('Enter customer name: ').lower()
 import importlib
-config = importlib.import_module(f'data.{customer_name}.config')
+config = importlib.import_module(f'config')
 # Import custom functions
 from my_mods.general import iterate_dict, iterate_list, clear
 from my_mods.san import wwpn_colonizer
@@ -33,18 +33,18 @@ def main():
             component_dict = {}
             for component in component_list:
                 component_dict[component] = xml_to_dict_list(root, component)
-                # if not os.path.exists(f'{output_directory}\{file_name}'):
-                #     os.mkdir(f'{output_directory}\{file_name}')
-                # dict_list_to_csv(component_dict[component], f'{output_directory}\{file_name}\{file_name}-{component}.csv')
-            for cluster_dict in component_dict['cluster']:
-                cluster_name = cluster_dict['name']
-                code_level = cluster_dict['code_level']
-                cluster_ip = cluster_dict['console_IP']
-            node_count = 0
-            for iogrp_dict in component_dict['io_grp']:
-                node_count += int(iogrp_dict['node_count'])
-            print(f'NODE COUNT = {node_count}')
-            write_to_workbook(output_directory, component_dict, customer_name, cluster_name, code_level, cluster_ip)
+                if not os.path.exists(f'{output_directory}\{file_name}'):
+                    os.mkdir(f'{output_directory}\{file_name}')
+                dict_list_to_csv(component_dict[component], f'{output_directory}\{file_name}\{file_name}-{component}.csv')
+            # for cluster_dict in component_dict['cluster']:
+            #     cluster_name = cluster_dict['name']
+            #     code_level = cluster_dict['code_level']
+            #     cluster_ip = cluster_dict['console_IP']
+            # node_count = 0
+            # for iogrp_dict in component_dict['io_grp']:
+            #     node_count += int(iogrp_dict['node_count'])
+            # print(f'NODE COUNT = {node_count}')
+            # write_to_workbook(output_directory, component_dict, customer_name, cluster_name, code_level, cluster_ip)
 
 
 def write_to_workbook(output_directory, component_dict, customer_name, cluster_name, code_level, cluster_ip):
@@ -181,13 +181,13 @@ def max_keys(db):
 def xml_to_dict_list(root, this_type):
     obj_dict_list = []
     for component in root:
-        component_type = component.get('type')
+        component_type = component.get('id')
         header_dict = {}
         if component_type == this_type:
             attr_dict = {}
             i = 1
             for attr in component:
-                attr_name = attr.get('name')
+                attr_name = attr.get('value')
                 if attr_name in header_dict.keys():
                     header_dict[attr_name] += 1
                     key = attr_name + str(header_dict[attr_name])
@@ -202,7 +202,7 @@ def xml_to_dict_list(root, this_type):
 def get_components(root):
     component_list = []
     for component in root:
-        component_type = component.get('type')
+        component_type = component.get('id')
         component_list.append(component_type)
     return component_list
 

@@ -71,7 +71,7 @@ def table_to_df(sheet_name, table_name='default'):
 # Build Data Frames from Workbook Tables
 df_fabrics = table_to_df('fabrics')
 df_aliases = table_to_df('aliases')
-df_zones = table_to_df('zones')
+df_zones = pd.read_excel(workbook, sheet_name='zone_lookup')
 df_config = table_to_df('config')
 df_config.set_index("parameter", inplace = True)  # allows the column "parameter" to be index
 
@@ -135,7 +135,6 @@ def main():
     zone_command_dict = create_zone_command_dict(zone_dict)
     zoneset_command_dict = create_zoneset_command_dict(zone_dict)
     mkhost_command_list = create_mkhost_command_list(host_dict)
-    iterate_list(mkhost_command_list)
     write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict)
 
 
@@ -214,15 +213,16 @@ def create_host_dict(fabric_dict):
             host_dict[name].append(row['wwpn2'])
     return dict(host_dict)
 
-
 def create_zone_dict(fabric_dict, port_dict):
     zone_list = []
     zone_dict = defaultdict(list)
+    member_columns = [col for col in df_zones.columns if 'member' in col]
+    print(member_columns)
     for index, row in df_zones.iterrows():
         member_list = []
         name = row['name']
         fabric_name = row['fabric']
-        zone_type = row['zone type']
+        zone_type = row['zone_type']
 
         if row['exists_new'] == 'exists':
             exists = True
@@ -231,30 +231,9 @@ def create_zone_dict(fabric_dict, port_dict):
         if row['create_zone']:
             fabric = fabric_dict[fabric_name]
             for port in port_dict[fabric]:
-                if port.alias == row['member1']:
-                    member_list.append(port)
-                if port.alias == row['member2']:
-                    member_list.append(port)
-                if port.alias == row['member3']:
-                    member_list.append(port)
-                if port.alias == row['member4']:
-                    member_list.append(port)
-                if port.alias == row['member5']:
-                    member_list.append(port)       
-                if port.alias == row['member6']:
-                    member_list.append(port)
-                if port.alias == row['member7']:
-                    member_list.append(port)
-                if port.alias == row['member8']:
-                    member_list.append(port)
-                if port.alias == row['member9']:
-                    member_list.append(port)
-                if port.alias == row['member10']:
-                    member_list.append(port)
-                if port.alias == row['member11']:
-                    member_list.append(port)
-                if port.alias == row['member12']:
-                    member_list.append(port)                   
+                for col in member_columns:
+                    if port.alias == row[col]:
+                        member_list.append(port)
             this_zone = Zone(name, fabric, zone_type, member_list, exists)
             zone_list.append(this_zone)
     for zone in zone_list:

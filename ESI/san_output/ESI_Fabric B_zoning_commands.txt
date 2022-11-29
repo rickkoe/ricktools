@@ -1,0 +1,39 @@
+### ALIAS COMMANDS FOR FABRIC B
+config
+device-alias database
+device-alias name fs5k01-west_node1_port2 pwwn 50:05:07:68:12:16:1B:A5
+device-alias name fs5k01-west_node1_port4 pwwn 50:05:07:68:12:18:1B:A5
+device-alias name fs5k01-west_node1_port6 pwwn 50:05:07:68:12:26:1B:A5
+device-alias name fs5k01-west_node1_port8 pwwn 50:05:07:68:12:28:1B:A5
+device-alias name fs5k01-west_node2_port2 pwwn 50:05:07:68:12:16:1B:A6
+device-alias name fs5k01-west_node2_port4 pwwn 50:05:07:68:12:18:1B:A6
+device-alias name fs5k01-west_node2_port6 pwwn 50:05:07:68:12:26:1B:A6
+device-alias name fs5k01-west_node2_port8 pwwn 50:05:07:68:12:28:1B:A6
+device-alias commit
+
+### ZONE COMMANDS FOR FABRIC B
+zone name sz_west-v7k vsan 201
+member device-alias west-v7k_node1_port2 target
+member device-alias west-v7k_node1_port4 target
+member device-alias west-v7k_node2_port2 target
+member device-alias west-v7k_node2_port4 target
+zone name sz_fs5k01-west vsan 201
+member device-alias fs5k01-west_node1_port2 target
+member device-alias fs5k01-west_node1_port6 target
+member device-alias fs5k01-west_node2_port2 target
+member device-alias fs5k01-west_node2_port6 target
+
+### ZONESET COMMANDS FOR FABRIC B
+zoneset name WestFabricB-09-19-22 vsan 201
+member sz_west-v7k
+member sz_fs5k01-west
+zoneset activate name WestFabricB-09-19-22 vsan 201
+copy run start
+
+####################################################################
+#                         CISCO CHEATSHEET                         #
+####################################################################
+### SHOW ZONING WITH "*" ON MEMBERS THAT ARE LOGGED INTO THE FABRIC
+  show zoneset active
+### SHOW ALL LOGGED-IN WWPNS AND ASSOCIATED DEVICE-ALIASES
+  show flogi database
