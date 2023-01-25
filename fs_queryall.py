@@ -8,7 +8,11 @@ from openpyxl.styles import PatternFill, colors, Font, Color
 from openpyxl.worksheet.table import Table, TableStyleInfo
 from openpyxl.utils import get_column_letter
 
-customer_name = input('Enter customer name: ')
+if len(sys.argv) == 2:
+    # If an argument exists, the first argument is customer name
+    customer_name = sys.argv[1]
+else:
+    customer_name = input('Enter customer name: ')
 import importlib
 config = importlib.import_module(f'data.{customer_name}.config')
 # Import custom functions
@@ -26,25 +30,27 @@ def main():
         print('Error:  Customer folder and/or "fs_input" folder does not exist.  Please create the folder, add the XML files, and re-run the program.')
     else:
         for file_name in os.listdir(input_directory):
-            full_file = os.path.join(input_directory, file_name)
-            tree = ET.ElementTree(file=full_file)
-            root = tree.getroot()
-            component_list = remove_dup_list(get_components(root))
-            component_dict = {}
-            for component in component_list:
-                component_dict[component] = xml_to_dict_list(root, component)
-                # if not os.path.exists(f'{output_directory}\{file_name}'):
-                #     os.mkdir(f'{output_directory}\{file_name}')
-                # dict_list_to_csv(component_dict[component], f'{output_directory}\{file_name}\{file_name}-{component}.csv')
-            for cluster_dict in component_dict['cluster']:
-                cluster_name = cluster_dict['name']
-                code_level = cluster_dict['code_level']
-                cluster_ip = cluster_dict['console_IP']
-            node_count = 0
-            for iogrp_dict in component_dict['io_grp']:
-                node_count += int(iogrp_dict['node_count'])
-            print(f'NODE COUNT = {node_count}')
-            write_to_workbook(output_directory, component_dict, customer_name, cluster_name, code_level, cluster_ip)
+            if file_name != '.DS_Store':
+                print(file_name)
+                full_file = os.path.join(input_directory, file_name)
+                tree = ET.ElementTree(file=full_file)
+                root = tree.getroot()
+                component_list = remove_dup_list(get_components(root))
+                component_dict = {}
+                for component in component_list:
+                    component_dict[component] = xml_to_dict_list(root, component)
+                    # if not os.path.exists(f'{output_directory}\{file_name}'):
+                    #     os.mkdir(f'{output_directory}\{file_name}')
+                    # dict_list_to_csv(component_dict[component], f'{output_directory}\{file_name}\{file_name}-{component}.csv')
+                for cluster_dict in component_dict['cluster']:
+                    cluster_name = cluster_dict['name']
+                    code_level = cluster_dict['code_level']
+                    cluster_ip = cluster_dict['console_IP']
+                node_count = 0
+                for iogrp_dict in component_dict['io_grp']:
+                    node_count += int(iogrp_dict['node_count'])
+                print(f'NODE COUNT = {node_count}')
+                write_to_workbook(output_directory, component_dict, customer_name, cluster_name, code_level, cluster_ip)
 
 
 def write_to_workbook(output_directory, component_dict, customer_name, cluster_name, code_level, cluster_ip):

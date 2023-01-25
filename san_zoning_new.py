@@ -1,10 +1,11 @@
 from collections import defaultdict
 from statistics import mode
+import sys
 import pandas as pd
 import warnings
 import os
 import shutil
-from openpyxl import load_workbook
+from openpyxl import load_workbook, Workbook
 import importlib
 # Import custom functions
 from my_mods.general import iterate_dict, iterate_list, clear
@@ -13,25 +14,40 @@ from my_mods.san_cheatsheet import brocade_cheatsheet, cisco_cheatsheet
 import config
 yes_answers = ['y','yes']
 
+def make_workbook(wb_name):
+    workbook_path = os.path.join(customer_path, config.san_input, wb_name)
+    wb = Workbook()
+    wb.remove(wb.active)
+    all_sheets = [
+        'fabrics',
+        'aliases',
+        'zones',
+        'config',
+        'alias_lookup',
+        'zone_lookup',
+        'scratchpad'
+    ]
+    for sheet_name in all_sheets:
+        wb.create_sheet(sheet_name)
+    wb.save(workbook_path)
+
 def make_customer(customer_path):
-    if os.path.exists(customer_path):
-        print('Found existing customer folder')
-    else:
-        choice = input('Customer folder does not exist, create now? (y,n) ')
-        if choice.lower() in yes_answers:
-            os.makedirs(os.path.join(customer_path,config.ds_input),exist_ok=True)
-            os.makedirs(os.path.join(customer_path,config.ds_output),exist_ok=True)
-            os.makedirs(os.path.join(customer_path,config.fs_input),exist_ok=True)
-            os.makedirs(os.path.join(customer_path,config.fs_output),exist_ok=True)
-            os.makedirs(os.path.join(customer_path,config.san_input),exist_ok=True)
-            os.makedirs(os.path.join(customer_path,config.san_output),exist_ok=True)
-            shutil.copyfile(os.path.join('data','_template',config.san_input,config.zoning_workbook),os.path.join(customer_path,config.san_input,config.zoning_workbook))
-        else:
-            print('Exiting...')
+    os.makedirs(os.path.join(customer_path,config.ds_input),exist_ok=True)
+    os.makedirs(os.path.join(customer_path,config.ds_output),exist_ok=True)
+    os.makedirs(os.path.join(customer_path,config.fs_input),exist_ok=True)
+    os.makedirs(os.path.join(customer_path,config.fs_output),exist_ok=True)
+    os.makedirs(os.path.join(customer_path,config.san_input),exist_ok=True)
+    os.makedirs(os.path.join(customer_path,config.san_output),exist_ok=True)
+    # make_workbook(config.zoning_workbook)
+
 
 # Global Variables
 clear()
-customer_name = input('Enter customer name: ')
+if len(sys.argv) == 2:
+    # If an argument exists, the first argument is customer name
+    customer_name = sys.argv[1]
+else:
+    customer_name = input('Enter customer name: ')
 customer_path = os.path.join(config.customer_path, customer_name)
 make_customer(customer_path)
 warnings.simplefilter(action='ignore', category=UserWarning)
@@ -127,6 +143,7 @@ class Host:
 
 
 def main():
+
     fabric_dict = create_fabric_dict()
     port_dict = create_port_dict(fabric_dict)
     host_dict = create_host_dict(fabric_dict)
@@ -135,6 +152,7 @@ def main():
     zone_command_dict = create_zone_command_dict(zone_dict)
     zoneset_command_dict = create_zoneset_command_dict(zone_dict)
     mkhost_command_list = create_mkhost_command_list(host_dict)
+    iterate_list(mkhost_command_list)
     write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict)
 
 
@@ -147,7 +165,7 @@ def fs_mkhost(host_obj):
     for wwpn in host_obj.wwpns:
         wwpn_list.append(wwpn_colonizer(wwpn,''))
     wwpns = ':'.join(wwpn_list)
-    host_command = f'svctask mkhost -fcwwpn {wwpns} -force -iogrp 0:1:2:3 -name {host_obj.name} -protocol scsi -type generic'
+    host_command = f'svctask mkhost -fcwwpn {wwpns} -force -name {host_obj.name} -protocol scsi -type generic'
     return host_command
 
 
@@ -206,24 +224,23 @@ def create_port_dict(fabric_dict):
 def create_host_dict(fabric_dict):
     host_dict = defaultdict(list)
     for index, row in df_aliases.iterrows():
-        name = row['fs_host_name']
-        if row['wwpn1']:
-            host_dict[name].append(row['wwpn1'])
-        if row['wwpn2']:
-            host_dict[name].append(row['wwpn2'])
+        if row['fs_host_name']:
+            name = row['fs_host_name']
+            if row['wwpn1']:
+                host_dict[name].append(row['wwpn1'])
+            if row['wwpn2']:
+                host_dict[name].append(row['wwpn2'])
     return dict(host_dict)
 
 def create_zone_dict(fabric_dict, port_dict):
     zone_list = []
     zone_dict = defaultdict(list)
     member_columns = [col for col in df_zones.columns if 'member' in col]
-    print(member_columns)
     for index, row in df_zones.iterrows():
         member_list = []
         name = row['name']
         fabric_name = row['fabric']
         zone_type = row['zone_type']
-
         if row['exists_new'] == 'exists':
             exists = True
         else:
@@ -233,6 +250,8 @@ def create_zone_dict(fabric_dict, port_dict):
             for port in port_dict[fabric]:
                 for col in member_columns:
                     if port.alias == row[col]:
+                        if zone_type == 'smart_peer' and port.tag == None:
+                            print(f'WARNING:  Alias {port.alias} is missing a tag for Smart/Peer Zoning')
                         member_list.append(port)
             this_zone = Zone(name, fabric, zone_type, member_list, exists)
             zone_list.append(this_zone)
@@ -354,6 +373,8 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict):
                 script_file.write('\n' + command)
             for command in san_cheatsheet:
                 script_file.write('\n' + command)
+
+
 
 
 

@@ -5,5 +5,5 @@ ds_output = 'ds_output'
 san_input = 'san_input'
 san_output = 'san_output'
 
-zoning_workbook = 'san zoning.xlsm'
+zoning_workbook = 'SAN Zoning.xlsm'
 customer_path = 'data'
