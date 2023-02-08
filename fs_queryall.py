@@ -3,6 +3,7 @@ import os
 import csv
 import itertools
 import sys
+from datetime import datetime
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import PatternFill, colors, Font, Color
 from openpyxl.worksheet.table import Table, TableStyleInfo
@@ -15,6 +16,8 @@ else:
     customer_name = input('Enter customer name: ')
 import importlib
 config = importlib.import_module(f'data.{customer_name}.config')
+now = datetime.now()
+date_time_str = now.strftime("%Y%m%d_%H%M%S")
 # Import custom functions
 from my_mods.general import iterate_dict, iterate_list, clear
 from my_mods.san import wwpn_colonizer
@@ -54,7 +57,7 @@ def main():
 
 
 def write_to_workbook(output_directory, component_dict, customer_name, cluster_name, code_level, cluster_ip):
-    workbook_name = f"{customer_name}_{cluster_name}_QUERYALL_FS.xlsx"
+    workbook_name = f"{customer_name}_{cluster_name}_QUERYALL_FS_{date_time_str}.xlsx"
     wb = Workbook()
     print(f'\nCreating Workbook: {workbook_name}')
     toc_row = 7
