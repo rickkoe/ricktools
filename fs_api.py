@@ -227,6 +227,22 @@ ntp_server = format_variable(get_wb_name_value('ntp_server', sheet_name))
 timezone = timezone_dict[get_wb_name_value('timezone', sheet_name)]
 smtp_server = format_variable(get_wb_name_value('smtp_server', sheet_name))
 smtp_port = format_variable(get_wb_name_value('smtp_port', sheet_name))
+snmp_server = format_variable(get_wb_name_value('snmp_server', sheet_name))
+snmp_community = format_variable(get_wb_name_value('snmp_community', sheet_name))
+snmp_port = format_variable(get_wb_name_value('snmp_port', sheet_name))
+snmp_events = format_variable(get_wb_name_value('snmp_events', sheet_name))
+if 'error' in snmp_events:
+    snmp_error = 'on'
+else:
+    snmp_error = 'off'
+if 'warning' in snmp_events:
+    snmp_warning = 'on'
+else:
+    snmp_warning = 'off'
+if 'info' in snmp_events:
+    snmp_info = 'on'
+else:
+    snmp_info = 'off'
 email_notify_1 = get_wb_name_value('email_notify_1', sheet_name)
 email_notify_2 = get_wb_name_value('email_notify_2', sheet_name)
 email_notify_3 = get_wb_name_value('email_notify_3', sheet_name)
@@ -260,10 +276,26 @@ command_list.append(format_command(f'chemail -address {address} -city {city} -co
 for email in email_notify_list:
     command_list.append(format_command(f'mkemailuser -address {email} -error on -info off -inventory off -warning on'))
 command_list.append(format_command(f'mkemailuser -address callhome@de.ibm.com -error on -info off -inventory on -usertype support -warning off'))
-command_list.append(format_command(f'mkemailserver -ip {smtp_server} -port {smtp_port}'))
+response = input('Add email server? (Y/y/N/n)  ')
+if response.lower() == 'y':
+    command_list.append(format_command(f'mkemailserver -ip {smtp_server} -port {smtp_port}'))
+else:
+    print('Bypassing creation of email server')
 command_list.append(format_command('startemail'))
-# command_list.append(format_command(f'chclusterip -clusterip {cluster_ip} -gw {default_gateway} -mask {subnet_mask} -port 1'))
+response = input('Add snmp server? (Y/y/N/n)  ')
+if response.lower() == 'y':
+    command_list.append(format_command(f'mksnmpserver -community {snmp_community} -error {snmp_error} -info {snmp_info} -ip {snmp_server} -port {snmp_port} -warning {snmp_warning}'))
+else:
+    print('Bypassing creation of snmp server')
+response = input('Change cluster IP? (Y/y/N/n)  ')
+if response.lower() == 'y':
+    command_list.append(format_command(f'chclusterip -clusterip {cluster_ip} -gw {default_gateway} -mask {subnet_mask} -port 1'))
+else:
+    print('Bypassing changing cluster IP')
 
+# 
+# COMMANDS TO BE IMPLEMENTED
+# svctask mksnmpserver -community public -error on -info on -ip snmp-trap.inmar.com -port 162 -warning on
 
 # SET CREDENTIALS AND API TARGET
 cluster_name_ip = get_wb_name_value('cluster_name_ip', 'config')
