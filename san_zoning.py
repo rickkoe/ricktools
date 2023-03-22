@@ -137,9 +137,10 @@ class Zone:
 
 
 class Host:
-    def __init__(self, name, wwpns):
+    def __init__(self, name, wwpns, storage):
         self.name = name
         self.wwpns = wwpns
+        self.storage = storage
     def __str__(self):
         return self.name
 
@@ -148,14 +149,14 @@ def main():
 
     fabric_dict = create_fabric_dict()
     port_dict = create_port_dict(fabric_dict)
-    host_dict = create_host_dict(fabric_dict)
+    host_list = create_host_list(fabric_dict)
     zone_dict = create_zone_dict(fabric_dict, port_dict)
     alias_command_dict = create_alias_command_dict(port_dict)
     zone_command_dict = create_zone_command_dict(zone_dict)
     zoneset_command_dict = create_zoneset_command_dict(zone_dict)
-    mkhost_command_list = create_mkhost_command_list(host_dict)
-    iterate_list(mkhost_command_list)
-    write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict)
+    mkhost_command_dict = create_mkhost_command_dict(host_list)
+    write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict)
+    # write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict)
 
 
 def fs_mkhost(host_obj):
@@ -171,13 +172,12 @@ def fs_mkhost(host_obj):
     return host_command
 
 
-def create_mkhost_command_list(host_dict):
-    mkhost_command_list = []
-    for host, port_list in host_dict.items():
-        this_host = Host(host,port_list)
-        host_command = fs_mkhost(this_host)
-        mkhost_command_list.append(host_command)
-    return mkhost_command_list
+def create_mkhost_command_dict(host_list):
+    mkhost_command_dict = defaultdict(list)
+    for host in host_list:
+        host_command = fs_mkhost(host)
+        mkhost_command_dict[host.storage].append(host_command)
+    return mkhost_command_dict
     
 
 def make_customer():
@@ -223,16 +223,26 @@ def create_port_dict(fabric_dict):
     return dict(port_dict)
 
 
-def create_host_dict(fabric_dict):
-    host_dict = defaultdict(list)
+def create_host_list(fabric_dict):
+    host_list = []
     for index, row in df_aliases.iterrows():
+        wwpn_list =[]
         if row['fs_host_name']:
             name = row['fs_host_name']
+            fs = row['fs_name']
             if row['wwpn1']:
-                host_dict[name].append(row['wwpn1'])
+                wwpn_list.append(row['wwpn1'])
             if row['wwpn2']:
-                host_dict[name].append(row['wwpn2'])
-    return dict(host_dict)
+                wwpn_list.append(row['wwpn2'])
+
+
+            if any(host.name == name for host in host_list):
+                for idx, host in enumerate(host_list):
+                    if host.name == name:
+                        host.wwpns.extend(wwpn_list)
+            else:
+                host_list.append(Host(name, wwpn_list, fs))
+    return host_list
 
 # def create_zone_dict(fabric_dict, port_dict):
 #     zone_list = []
@@ -401,7 +411,7 @@ def create_zoneset_command_dict(zone_dict):
     return zoneset_command_dict
 
 
-def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict):
+def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict):
     file_open = False
     for fabric, alias_commands in alias_command_dict.items():
         print(f'Writing alias commands for {customer_name} {fabric}')
@@ -432,6 +442,14 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict):
                 script_file.write('\n' + command)
             for command in san_cheatsheet:
                 script_file.write('\n' + command)
+
+    for fs, host_commands in mkhost_command_dict.items():
+        print(f'Writing FlashSystem host commands for {customer_name} {fs}')
+        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_STORAGE_{fs}_mkhost_commands.txt'), mode='a', encoding='utf-8') as script_file:
+            script_file.write(f'### MKHOST COMMANDS FOR {fs.upper()}')
+            for command in host_commands:
+                script_file.write('\n' + command)
+
 
 
 
