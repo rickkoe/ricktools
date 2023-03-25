@@ -94,6 +94,7 @@ df_config.set_index("parameter", inplace = True)  # allows the column "parameter
 # Set config parameters
 san_vendor = df_config.loc['san_vendor', 'setting']
 zone_ratio = df_config.loc['zone_ratio', 'setting']
+filename = df_config.loc['filename', 'setting']
 cisco_zoning_mode = df_config.loc['cisco_zoning_mode', 'setting']
 if san_vendor == 'Brocade':
     zoneset_config = 'zone config'
@@ -193,7 +194,7 @@ def create_fabric_dict():
     for index, row in df_fabrics.iterrows():
         active_zoneset_config = row['active zoneset/config']
         name = row['name']
-        vsan = row['vsan']
+        vsan = str(row['vsan'])
         if row['exists_new'] == 'exists':
             exists = True
         else:
@@ -229,7 +230,10 @@ def create_host_list(fabric_dict):
         wwpn_list =[]
         if row['fs_host_name']:
             name = row['fs_host_name']
-            fs = row['fs_name']
+            if row['fs_name']:
+                fs = row['fs_name']
+            else:
+                fs = 'fs_not_defined'
             if row['wwpn1']:
                 wwpn_list.append(row['wwpn1'])
             if row['wwpn2']:
@@ -415,7 +419,7 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, m
     file_open = False
     for fabric, alias_commands in alias_command_dict.items():
         print(f'Writing alias commands for {customer_name} {fabric}')
-        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_zoning_commands.txt'), mode='wt', encoding='utf-8') as script_file:
+        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_{filename}.txt'), mode='wt', encoding='utf-8') as script_file:
             script_file.write(f'### ALIAS COMMANDS FOR {fabric.name.upper()}')
             if san_vendor == 'Cisco':
                 script_file.write('\nconfig\ndevice-alias database')
@@ -430,13 +434,13 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, m
             mode = 'a'
         else:
             mode = 'wt'
-        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_zoning_commands.txt'), mode=mode, encoding='utf-8') as script_file:
+        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_{filename}.txt'), mode=mode, encoding='utf-8') as script_file:
             script_file.write(f'\n\n### ZONE COMMANDS FOR {fabric.name.upper()}')
             for command in zone_commands:
                 script_file.write('\n' + command)
     for fabric, zoneset_commands in zoneset_command_dict.items():
         print(f'Writing {zoneset_config} commands for {customer_name} {fabric}')
-        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_zoning_commands.txt'), mode='a', encoding='utf-8') as script_file:
+        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_{filename}.txt'), mode='a', encoding='utf-8') as script_file:
             script_file.write(f'\n\n### {zoneset_config.upper()} COMMANDS FOR {fabric.name.upper()}')
             for command in zoneset_commands:
                 script_file.write('\n' + command)
