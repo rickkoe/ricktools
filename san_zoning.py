@@ -87,7 +87,8 @@ def table_to_df(sheet_name, table_name='default'):
 # Build Data Frames from Workbook Tables
 df_fabrics = table_to_df('fabrics')
 df_aliases = table_to_df('aliases')
-df_zones = pd.read_excel(workbook, sheet_name='zone_lookup')
+df_zones = table_to_df('zones')
+df_zone_lookup = pd.read_excel(workbook, sheet_name='zone_lookup')
 df_config = table_to_df('config')
 df_config.set_index("parameter", inplace = True)  # allows the column "parameter" to be index
 
@@ -147,7 +148,6 @@ class Host:
 
 
 def main():
-
     fabric_dict = create_fabric_dict()
     port_dict = create_port_dict(fabric_dict)
     host_list = create_host_list(fabric_dict)
@@ -157,7 +157,7 @@ def main():
     zoneset_command_dict = create_zoneset_command_dict(zone_dict)
     mkhost_command_dict = create_mkhost_command_dict(host_list)
     write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict)
-    # write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict)
+    add_to_zones()
 
 
 def fs_mkhost(host_obj):
@@ -248,39 +248,22 @@ def create_host_list(fabric_dict):
                 host_list.append(Host(name, wwpn_list, fs))
     return host_list
 
-# def create_zone_dict(fabric_dict, port_dict):
-#     zone_list = []
-#     zone_dict = defaultdict(list)
-#     member_columns = [col for col in df_zones.columns if 'member' in col]
-#     for index, row in df_zones.iterrows():
-#         member_list = []
-#         name = row['name']
-#         fabric_name = row['fabric']
-#         zone_type = row['zone_type']
-#         if row['exists_new'] == 'exists':
-#             exists = True
-#         else:
-#             exists = False
-#         if row['create_zone']:
-#             fabric = fabric_dict[fabric_name]
-#             for port in port_dict[fabric]:
-#                 for col in member_columns:
-#                     if port.alias == row[col]:
-#                         if zone_type == 'smart_peer' and port.tag == None:
-#                             print(f'WARNING:  Alias {port.alias} is missing a tag for Smart/Peer Zoning')
-#                         member_list.append(port)
-#             this_zone = Zone(name, fabric, zone_type, member_list, exists)
-#             zone_list.append(this_zone)
-#     for zone in zone_list:
-#         zone_dict[zone.fabric].append(zone)
-#     return dict(zone_dict)
-
+def add_to_zones():
+    for index, row in df_aliases.iterrows():
+        if row['add_to_zone']:
+            # Check to see if the zone already contains the member
+            if not df_zones[row['add_to_zone']].eq(row['name']).any():
+    
+                # df_zones.append({row['add_to_zone']:row['name']}, ignore_index=True)
+                zone_row = df_zones[row['add_to_zone']].last_valid_index() + 1
+                df_zones.loc[zone_row, row['add_to_zone']] = row['name']
+    print(df_zones)
 
 def create_zone_dict(fabric_dict, port_dict):
     zone_list = []
     zone_dict = defaultdict(list)
-    member_columns = [col for col in df_zones.columns if 'member' in col]
-    for index, row in df_zones.iterrows():
+    member_columns = [col for col in df_zone_lookup.columns if 'member' in col]
+    for index, row in df_zone_lookup.iterrows():
         member_list = []
         zone_type = row['zone_type']
         name = row['name']
@@ -446,17 +429,12 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, m
                 script_file.write('\n' + command)
             for command in san_cheatsheet:
                 script_file.write('\n' + command)
-
     for fs, host_commands in mkhost_command_dict.items():
         print(f'Writing FlashSystem host commands for {customer_name} {fs}')
         with open(os.path.join(customer_path,config.san_output, f'{customer_name}_STORAGE_{fs}_mkhost_commands.txt'), mode='a', encoding='utf-8') as script_file:
             script_file.write(f'### MKHOST COMMANDS FOR {fs.upper()}')
             for command in host_commands:
                 script_file.write('\n' + command)
-
-
-
-
 
 
 if __name__ == '__main__':
