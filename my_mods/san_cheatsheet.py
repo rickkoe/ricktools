@@ -24,4 +24,10 @@ cisco_cheatsheet = [
     '  show zoneset active',
     '### SHOW ALL LOGGED-IN WWPNS AND ASSOCIATED DEVICE-ALIASES',
     '  show flogi database',
+    '### SHOW PENDING DIFF FOR ZONING THAT HAS NOT BEEN COMMITTED',
+    '  show zone pending-diff vsan xx',
+    '### SHOW DEVICE-ALIAS MODE',
+    '  show device-alias status',
+    '### SET DEVICE-ALIAS TO ENHANCED MODE',
+    '  device-alias mode enhanced'
 ]
