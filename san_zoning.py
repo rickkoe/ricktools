@@ -6,6 +6,7 @@ import warnings
 import os
 import shutil
 from openpyxl import load_workbook, Workbook
+from openpyxl.utils.dataframe import dataframe_to_rows
 import importlib
 # Import custom functions
 from my_mods.general import iterate_dict, iterate_list, clear
@@ -157,7 +158,30 @@ def main():
     zoneset_command_dict = create_zoneset_command_dict(zone_dict)
     mkhost_command_dict = create_mkhost_command_dict(host_list)
     write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict)
-    add_to_zones()
+    # add_to_zones()
+    df_hosts = table_to_df('hosts')
+    for index, row in df_hosts.iterrows():
+        host_qty = row['host_qty']
+        volume_qty = row['volume_qty']
+        host_name = row['host_name']
+        volume_name = row['volume_name']
+        for i in range(host_qty):
+            print(fs_map(i, host_name, volume_name, volume_qty, host_qty))
+
+
+def fs_map(group, host_name, volume_name, volume_qty, host_qty ):
+    group += 1
+    volumes_per_group = volume_qty/host_qty
+    range_list = []
+    starting_volume = 0
+    for i in range(host_qty):
+        starting_volume = i * volumes_per_group
+        ending_volume = starting_volume + volumes_per_group - 1
+        range_list.append((int(starting_volume), int(ending_volume)))
+    start = range_list[group-1][0]
+    end = range_list[group-1][1]
+    return f'for ((i={start};i<={end};i++)); do svctask mkvdiskhostmap -force -host {host_name}_{group:02d} {volume_name}_$i; done'
+
 
 
 def fs_mkhost(host_obj):
@@ -249,6 +273,9 @@ def create_host_list(fabric_dict):
     return host_list
 
 def add_to_zones():
+    test_file = os.path.join(customer_path, config.san_input, f'test_file.xlsx')
+    wb_test = load_workbook(test_file)
+    ws_test = wb_test.active
     for index, row in df_aliases.iterrows():
         if row['add_to_zone']:
             # Check to see if the zone already contains the member
@@ -257,7 +284,14 @@ def add_to_zones():
                 # df_zones.append({row['add_to_zone']:row['name']}, ignore_index=True)
                 zone_row = df_zones[row['add_to_zone']].last_valid_index() + 1
                 df_zones.loc[zone_row, row['add_to_zone']] = row['name']
-    print(df_zones)
+    rows =dataframe_to_rows(df_zones, index=False)
+    for r_idx, row in enumerate(rows, 1):
+        for c_idx, value in enumerate(row, 1):
+            ws_test.cell(row=r_idx, column=c_idx, value=value)
+  
+
+    wb_test.save(test_file)
+
 
 def create_zone_dict(fabric_dict, port_dict):
     zone_list = []
@@ -280,6 +314,7 @@ def create_zone_dict(fabric_dict, port_dict):
                         if zone_type == 'smart_peer' and port.tag == None:
                             print(f'WARNING:  Alias {port.alias} is missing a tag for Smart/Peer Zoning')
                         member_list.append(port)
+            member_list.sort(key=lambda x: x.tag, reverse=True)
             # Create non-smart zones
             if zone_type == 'standard':
                 if zone_ratio == "one-to-one":
