@@ -92,6 +92,7 @@ df_zones = table_to_df('zones')
 df_zone_lookup = pd.read_excel(workbook, sheet_name='zone_lookup')
 df_config = table_to_df('config')
 df_config.set_index("parameter", inplace = True)  # allows the column "parameter" to be index
+df_hosts = table_to_df('hosts')
 
 # Set config parameters
 san_vendor = df_config.loc['san_vendor', 'setting']
@@ -118,12 +119,13 @@ class Fabric:
 
 
 class Port:
-    def __init__(self, alias, wwpn, tag, fabric, exists):
+    def __init__(self, alias, wwpn, tag, fabric, exists,to_be_zoned='yes'):
         self.alias = alias
         self.wwpn = wwpn
         self.tag = tag
         self.fabric = fabric
         self.exists = exists
+        self.to_be_zoned = to_be_zoned
     def __str__(self):
         return self.alias
 
@@ -153,20 +155,32 @@ def main():
     port_dict = create_port_dict(fabric_dict)
     host_list = create_host_list(fabric_dict)
     zone_dict = create_zone_dict(fabric_dict, port_dict)
+    host_map_command_dict = fs_maphosts()
     alias_command_dict = create_alias_command_dict(port_dict)
     zone_command_dict = create_zone_command_dict(zone_dict)
     zoneset_command_dict = create_zoneset_command_dict(zone_dict)
     mkhost_command_dict = create_mkhost_command_dict(host_list)
-    write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict)
-    # add_to_zones()
-    df_hosts = table_to_df('hosts')
+    write_to_file(alias_command_dict,
+                  zone_command_dict, 
+                  zoneset_command_dict, 
+                  mkhost_command_dict,
+                  host_map_command_dict
+                  ) 
+    
+
+def fs_maphosts():
+    command_dict = defaultdict(list)
     for index, row in df_hosts.iterrows():
+        map_command = row['map_command']
         host_qty = row['host_qty']
         volume_qty = row['volume_qty']
         host_name = row['host_name']
         volume_name = row['volume_name']
+        storage_system = row['storage_system']
         for i in range(host_qty):
-            print(fs_map(i, host_name, volume_name, volume_qty, host_qty))
+            if map_command == 'yes':
+                command_dict[storage_system].append(fs_map(i, host_name, volume_name, volume_qty, host_qty))
+    return command_dict
 
 
 def fs_map(group, host_name, volume_name, volume_qty, host_qty ):
@@ -237,11 +251,12 @@ def create_port_dict(fabric_dict):
         name = row['name']
         wwpn = row['wwpn1']
         tag = row['tag']
+        to_be_zoned = row['zone']
         if row['exists_new'] == 'exists':
             exists = True
         else:
             exists = False
-        this_port = Port(name, wwpn, tag, fabric, exists)
+        this_port = Port(name, wwpn, tag, fabric, exists, to_be_zoned)
         port_list.append(this_port)
     for port in port_list:
         port_dict[port.fabric].append(port)
@@ -252,7 +267,7 @@ def create_host_list(fabric_dict):
     host_list = []
     for index, row in df_aliases.iterrows():
         wwpn_list =[]
-        if row['fs_host_name']:
+        if row['fs_host_name'] and row['create_host'] == 'yes':
             name = row['fs_host_name']
             if row['fs_name']:
                 fs = row['fs_name']
@@ -310,7 +325,7 @@ def create_zone_dict(fabric_dict, port_dict):
             fabric = fabric_dict[fabric_name]
             for port in port_dict[fabric]:
                 for col in member_columns:
-                    if port.alias == row[col]:
+                    if port.alias == row[col] and port.to_be_zoned == 'yes':
                         if zone_type == 'smart_peer' and port.tag == None:
                             print(f'WARNING:  Alias {port.alias} is missing a tag for Smart/Peer Zoning')
                         member_list.append(port)
@@ -429,11 +444,11 @@ def create_zoneset_command_dict(zone_dict):
             zoneset_command_dict[fabric].append(f'zoneset activate name {fabric.active_zoneset_config} vsan {fabric.vsan}')
             if cisco_zoning_mode == 'enhanced':
                 zoneset_command_dict[fabric].append(f'zone commit vsan {fabric.vsan}')
-            zoneset_command_dict[fabric].append(f'copy run start')
+            zoneset_command_dict[fabric].append(f'\ncopy run start')
     return zoneset_command_dict
 
 
-def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict):
+def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict, hostmap_command_dict):
     file_open = False
     for fabric, alias_commands in alias_command_dict.items():
         print(f'Writing alias commands for {customer_name} {fabric}')
@@ -466,10 +481,17 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, m
                 script_file.write('\n' + command)
     for fs, host_commands in mkhost_command_dict.items():
         print(f'Writing FlashSystem host commands for {customer_name} {fs}')
-        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_STORAGE_{fs}_mkhost_commands.txt'), mode='a', encoding='utf-8') as script_file:
+        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{filename}.txt'), mode='wt', encoding='utf-8') as script_file:
             script_file.write(f'### MKHOST COMMANDS FOR {fs.upper()}')
             for command in host_commands:
                 script_file.write('\n' + command)
+    for fs, hostmap_commands in hostmap_command_dict.items():
+        print(f'Writing FlashSystem host mapping commands for {customer_name} {fs}')
+        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{filename}.txt'), mode='a', encoding='utf-8') as script_file:
+            script_file.write(f'\n\n### MKVDISKHOSTMAP COMMANDS FOR {fs.upper()}')
+            for command in hostmap_commands:
+                script_file.write('\n' + command)
+    
 
 
 if __name__ == '__main__':
