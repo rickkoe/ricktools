@@ -92,13 +92,18 @@ df_zones = table_to_df('zones')
 df_zone_lookup = pd.read_excel(workbook, sheet_name='zone_lookup')
 df_config = table_to_df('config')
 df_config.set_index("parameter", inplace = True)  # allows the column "parameter" to be index
-df_hosts = table_to_df('hosts')
+df_flashsystem = table_to_df('flashsystem')
 
 # Set config parameters
 san_vendor = df_config.loc['san_vendor', 'setting']
 zone_ratio = df_config.loc['zone_ratio', 'setting']
-filename = df_config.loc['filename', 'setting']
+zoning_filename = df_config.loc['zoning_filename', 'setting']
+storage_filename = df_config.loc['storage_filename', 'setting']
 cisco_zoning_mode = df_config.loc['cisco_zoning_mode', 'setting']
+create_flashsystem_scripts = df_config.loc['flashsystem_scripts', 'setting']
+create_ds8k_ckd_scripts = df_config.loc['ds8k_ckd_scripts', 'setting']
+create_ds8k_fb_scripts = df_config.loc['ds8k_fb_scripts', 'setting']
+create_zoning_scripts = df_config.loc['zoning_scripts', 'setting']
 if san_vendor == 'Brocade':
     zoneset_config = 'zone config'
     san_cheatsheet = brocade_cheatsheet
@@ -155,7 +160,8 @@ def main():
     port_dict = create_port_dict(fabric_dict)
     host_list = create_host_list(fabric_dict)
     zone_dict = create_zone_dict(fabric_dict, port_dict)
-    host_map_command_dict = fs_maphosts()
+    mkvdisk_command_dict = fs_maphosts()[0]
+    host_map_command_dict = fs_maphosts()[1]
     alias_command_dict = create_alias_command_dict(port_dict)
     zone_command_dict = create_zone_command_dict(zone_dict)
     zoneset_command_dict = create_zoneset_command_dict(zone_dict)
@@ -164,23 +170,34 @@ def main():
                   zone_command_dict, 
                   zoneset_command_dict, 
                   mkhost_command_dict,
+                  mkvdisk_command_dict,
                   host_map_command_dict
-                  ) 
-    
+                  )
+
 
 def fs_maphosts():
-    command_dict = defaultdict(list)
-    for index, row in df_hosts.iterrows():
+    mkvdisk_command_dict = defaultdict(list)
+    map_command_dict = defaultdict(list)
+    for index, row in df_flashsystem.iterrows():
         map_command = row['map_command']
+        volume_command = row['volume_command']
+        thin = row['thin_provisioned']
         host_qty = row['host_qty']
         volume_qty = row['volume_qty']
         host_name = row['host_name']
         volume_name = row['volume_name']
+        volume_size = row['volume_size']
+        volume_start = row['volume_start']
         storage_system = row['storage_system']
+        pool = row['pool']
+        if volume_command == 'yes' and thin == 'yes':
+            mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_qty - 1};i++)); do svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 80% -mdiskgrp {pool} -name {volume_name}_$i -size {volume_size} -unit gb; done')
+        elif volume_command == 'yes' and thin == 'no':
+            mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_qty - 1};i++)); do svctask mkvdisk -mdiskgrp 0 -name {volume_name}_$i -size {volume_size} -unit gb; done')
         for i in range(host_qty):
             if map_command == 'yes':
-                command_dict[storage_system].append(fs_map(i, host_name, volume_name, volume_qty, host_qty))
-    return command_dict
+                map_command_dict[storage_system].append(fs_map(i, host_name, volume_name, volume_qty, host_qty))
+    return dict(mkvdisk_command_dict),dict(map_command_dict)
 
 
 def fs_map(group, host_name, volume_name, volume_qty, host_qty ):
@@ -448,49 +465,73 @@ def create_zoneset_command_dict(zone_dict):
     return zoneset_command_dict
 
 
-def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict, hostmap_command_dict):
+def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict, mkvdisk_command_dict, hostmap_command_dict):
     file_open = False
-    for fabric, alias_commands in alias_command_dict.items():
-        print(f'Writing alias commands for {customer_name} {fabric}')
-        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_{filename}.txt'), mode='wt', encoding='utf-8') as script_file:
-            script_file.write(f'### ALIAS COMMANDS FOR {fabric.name.upper()}')
-            if san_vendor == 'Cisco':
-                script_file.write('\nconfig\ndevice-alias database')
-            for command in alias_commands:
-                script_file.write('\n' + command)
-            if san_vendor == 'Cisco':
-                script_file.write('\ndevice-alias commit')
-            file_open = True
-    for fabric, zone_commands in zone_command_dict.items():
-        print(f'Writing zone commands for {customer_name} {fabric}')
-        if file_open:
-            mode = 'a'
-        else:
-            mode = 'wt'
-        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_{filename}.txt'), mode=mode, encoding='utf-8') as script_file:
-            script_file.write(f'\n\n### ZONE COMMANDS FOR {fabric.name.upper()}')
-            for command in zone_commands:
-                script_file.write('\n' + command)
-    for fabric, zoneset_commands in zoneset_command_dict.items():
-        print(f'Writing {zoneset_config} commands for {customer_name} {fabric}')
-        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_{filename}.txt'), mode='a', encoding='utf-8') as script_file:
-            script_file.write(f'\n\n### {zoneset_config.upper()} COMMANDS FOR {fabric.name.upper()}')
-            for command in zoneset_commands:
-                script_file.write('\n' + command)
-            for command in san_cheatsheet:
-                script_file.write('\n' + command)
-    for fs, host_commands in mkhost_command_dict.items():
-        print(f'Writing FlashSystem host commands for {customer_name} {fs}')
-        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{filename}.txt'), mode='wt', encoding='utf-8') as script_file:
-            script_file.write(f'### MKHOST COMMANDS FOR {fs.upper()}')
-            for command in host_commands:
-                script_file.write('\n' + command)
-    for fs, hostmap_commands in hostmap_command_dict.items():
-        print(f'Writing FlashSystem host mapping commands for {customer_name} {fs}')
-        with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{filename}.txt'), mode='a', encoding='utf-8') as script_file:
-            script_file.write(f'\n\n### MKVDISKHOSTMAP COMMANDS FOR {fs.upper()}')
-            for command in hostmap_commands:
-                script_file.write('\n' + command)
+    if create_zoning_scripts == 'yes':
+        for fabric, alias_commands in alias_command_dict.items():
+            print(f'Writing alias commands for {customer_name} {fabric}')
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_{zoning_filename}.txt'), mode='wt', encoding='utf-8') as script_file:
+                script_file.write(f'### ALIAS COMMANDS FOR {fabric.name.upper()}')
+                if san_vendor == 'Cisco':
+                    script_file.write('\nconfig\ndevice-alias database')
+                for command in alias_commands:
+                    script_file.write('\n' + command)
+                if san_vendor == 'Cisco':
+                    script_file.write('\ndevice-alias commit')
+                file_open = True
+        for fabric, zone_commands in zone_command_dict.items():
+            print(f'Writing zone commands for {customer_name} {fabric}')
+            if file_open:
+                mode = 'a'
+            else:
+                mode = 'wt'
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_{zoning_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
+                script_file.write(f'\n\n### ZONE COMMANDS FOR {fabric.name.upper()}')
+                for command in zone_commands:
+                    script_file.write('\n' + command)
+        for fabric, zoneset_commands in zoneset_command_dict.items():
+            print(f'Writing {zoneset_config} commands for {customer_name} {fabric}')
+            if file_open:
+                    mode = 'a'
+            else:
+                mode = 'wt'
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_{zoning_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
+                script_file.write(f'\n\n### {zoneset_config.upper()} COMMANDS FOR {fabric.name.upper()}')
+                for command in zoneset_commands:
+                    script_file.write('\n' + command)
+                for command in san_cheatsheet:
+                    script_file.write('\n' + command)
+    file_open = False
+    if create_flashsystem_scripts == 'yes':
+        for fs, host_commands in mkhost_command_dict.items():
+            print(f'Writing FlashSystem host commands for {customer_name} {fs}')
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{storage_filename}.txt'), mode='wt', encoding='utf-8') as script_file:
+                script_file.write(f'### MKHOST COMMANDS FOR {fs.upper()}')
+                for command in host_commands:
+                    script_file.write('\n' + command)
+        file_open = True
+        for fs, mkvdisk_commands in mkvdisk_command_dict.items():
+            print(f'Writing FlashSystem make volume commands for {customer_name} {fs}')
+            if file_open:
+                    mode = 'a'
+            else:
+                mode = 'wt'
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{storage_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
+                script_file.write(f'\n\n### MKVDISK COMMANDS FOR {fs.upper()}')
+                for command in mkvdisk_commands:
+                    script_file.write('\n' + command)
+        file_open = True
+        for fs, hostmap_commands in hostmap_command_dict.items():
+            print(f'Writing FlashSystem host mapping commands for {customer_name} {fs}')
+            if file_open:
+                    mode = 'a'
+            else:
+                mode = 'wt'
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{storage_filename}.txt'), mode='a', encoding='utf-8') as script_file:
+                script_file.write(f'\n\n### MKVDISKHOSTMAP COMMANDS FOR {fs.upper()}')
+                for command in hostmap_commands:
+                    script_file.write('\n' + command)
+        file_open = True
     
 
 
