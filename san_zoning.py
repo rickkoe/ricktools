@@ -9,7 +9,7 @@ from openpyxl import load_workbook, Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 import importlib
 # Import custom functions
-from my_mods.general import iterate_dict, iterate_list, clear
+from my_mods.general import iterate_dict, iterate_list, clear, hex2dec, dec2hex, is_even
 from my_mods.san import wwpn_colonizer
 from my_mods.san_cheatsheet import brocade_cheatsheet, cisco_cheatsheet
 import config
@@ -173,8 +173,10 @@ class Storage:
         return self.name
 
 def main():
-    storage_list = make_storage_list()
-    pprc_path_commands = ds_mkpprcpath(storage_list)
+    storage_tup = make_storage_list()
+    storage_list = storage_tup[0]
+    even_odd_dict = storage_tup[1]
+    pprc_path_commands = ds_mkpprcpath(storage_list, even_odd_dict)
     iterate_list(pprc_path_commands)
 
     """
@@ -225,16 +227,21 @@ def make_storage_list():
         ip_address = None
         for col in pprc_cols:
             pprc_dict[col] = row[col]
-        this_storage = Storage(name, family, machine_type, model, serial_number, system_id, wwnn, location, custom_tag, ip_address, pprc_dict)
-        storage_list.append(this_storage)
-    return storage_list
+        if name == 'even_odd':
+            even_odd_dict = pprc_dict
+        else:
+            this_storage = Storage(name, family, machine_type, model, serial_number, system_id, wwnn, location, custom_tag, ip_address, pprc_dict)
+            storage_list.append(this_storage)
+    return storage_list,even_odd_dict
 
 
-def ds_mkpprcpath(storage_list):
+def ds_mkpprcpath(storage_list, even_odd_dict):
     pprc_cols = [col for col in df_storage_list if 'pprc' in col]
     command_list = []
     for index, row in df_ds8k_pprc.iterrows():
-        pprc_port_list = []
+        pprc_even_port_list = []
+        pprc_odd_port_list = []
+        pprc_both_port_list = []
         source_id = f'IBM.2107-{row["source_id"]}'
         target_id = f'IBM.2107-{row["target_id"]}'
         for storage in storage_list:
@@ -246,9 +253,23 @@ def ds_mkpprcpath(storage_list):
         source_lss = str(row['source_start'])[:2]
         target_lss = str(row['target_start'])[:2]
         for pprc_port in pprc_cols:
+            even_odd = even_odd_dict[pprc_port]
             if source_storage.pprc_dict[pprc_port] and target_storage.pprc_dict[pprc_port]:
-                pprc_port_list.append(f'{source_storage.pprc_dict[pprc_port]}:{target_storage.pprc_dict[pprc_port]}')
-        pprc_ports = ' '.join(pprc_port_list)
+                if even_odd == 'even':
+                    pprc_even_port_list.append(f'{source_storage.pprc_dict[pprc_port]}:{target_storage.pprc_dict[pprc_port]}')
+                elif even_odd == 'odd':
+                    pprc_odd_port_list.append(f'{source_storage.pprc_dict[pprc_port]}:{target_storage.pprc_dict[pprc_port]}')
+                elif even_odd == 'both':
+                    pprc_both_port_list.append(f'{source_storage.pprc_dict[pprc_port]}:{target_storage.pprc_dict[pprc_port]}')
+        pprc_even_ports = ' '.join(pprc_even_port_list)
+        pprc_odd_ports = ' '.join(pprc_odd_port_list)
+        pprc_both_ports = ' '.join(pprc_both_port_list)
+        if pprc_even_ports and is_even(hex2dec(source_lss)):
+            pprc_ports = pprc_even_ports
+        elif pprc_odd_ports and not is_even(hex2dec(source_lss)):
+            pprc_ports = pprc_odd_ports
+        else:
+            pprc_ports = pprc_both_ports                                       
         command = f'mkpprcpath -dev {source_id} -remotedev {target_id} -remotewwnn {target_wwnn} -srclss {source_lss} -tgtlss {target_lss} {pprc_ports}'
         command_list.append(command)
     return command_list
