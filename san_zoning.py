@@ -93,6 +93,8 @@ df_zone_lookup = pd.read_excel(workbook, sheet_name='zone_lookup')
 df_config = table_to_df('config')
 df_config.set_index("parameter", inplace = True)  # allows the column "parameter" to be index
 df_flashsystem = table_to_df('flashsystem')
+df_storage_list = table_to_df('storage_list')
+df_ds8k_pprc = table_to_df('ds8k_pprc')
 
 # Set config parameters
 san_vendor = df_config.loc['san_vendor', 'setting']
@@ -153,9 +155,29 @@ class Host:
         self.storage = storage
     def __str__(self):
         return self.name
-
+    
+class Storage:
+    def __init__(self, name, family, machine_type, model, serial_number, system_id, wwnn=None, location=None, custom_tag=None, ip_address=None, pprc_dict=None):
+        self.name = name
+        self.family = family
+        self.machine_type = machine_type
+        self.model = model
+        self.serial_number = serial_number
+        self.system_id = system_id
+        self.wwnn = wwnn
+        self.location = location
+        self.custom_tag = custom_tag
+        self.ip_address = ip_address
+        self.pprc_dict = pprc_dict
+    def __str__(self):
+        return self.name
 
 def main():
+    storage_list = make_storage_list()
+    pprc_path_commands = ds_mkpprcpath(storage_list)
+    iterate_list(pprc_path_commands)
+
+    """
     fabric_dict = create_fabric_dict()
     port_dict = create_port_dict(fabric_dict)
     host_list = create_host_list(fabric_dict)
@@ -173,6 +195,68 @@ def main():
                   mkvdisk_command_dict,
                   host_map_command_dict
                   )
+    """
+
+
+def make_storage_list():
+    pprc_cols = [col for col in df_storage_list if 'pprc' in col]
+    storage_list = []
+    for index, row in df_storage_list.iterrows():
+        pprc_dict = {}
+        name = row['name']
+        family = row['family']
+        machine_type = row['machine_type']
+        model = row['model']
+        serial_number = row['serial_number']
+        system_id = row['system_id']
+        if row['wwnn']:
+            wwnn = row['wwnn']
+        else:
+            wwnn = None
+        if row['location']:
+            location = row['location']
+        else:
+            location = None
+        if row['custom_tag']:
+            custom_tag = row['custom_tag']
+        custom_tag = None
+        if row['ip_address']:
+            ip_address = row['ip_address']
+        ip_address = None
+        for col in pprc_cols:
+            pprc_dict[col] = row[col]
+        this_storage = Storage(name, family, machine_type, model, serial_number, system_id, wwnn, location, custom_tag, ip_address, pprc_dict)
+        storage_list.append(this_storage)
+    return storage_list
+
+
+def ds_mkpprcpath(storage_list):
+    pprc_cols = [col for col in df_storage_list if 'pprc' in col]
+    command_list = []
+    for index, row in df_ds8k_pprc.iterrows():
+        pprc_port_list = []
+        source_id = f'IBM.2107-{row["source_id"]}'
+        target_id = f'IBM.2107-{row["target_id"]}'
+        for storage in storage_list:
+            if storage.system_id == row['source_id']:
+                source_storage = storage
+            if storage.system_id == row['target_id']:
+                target_storage = storage
+        target_wwnn = row['target_wwnn']
+        source_lss = str(row['source_start'])[:2]
+        target_lss = str(row['target_start'])[:2]
+        for pprc_port in pprc_cols:
+            if source_storage.pprc_dict[pprc_port] and target_storage.pprc_dict[pprc_port]:
+                pprc_port_list.append(f'{source_storage.pprc_dict[pprc_port]}:{target_storage.pprc_dict[pprc_port]}')
+        pprc_ports = ' '.join(pprc_port_list)
+        command = f'mkpprcpath -dev {source_id} -remotedev {target_id} -remotewwnn {target_wwnn} -srclss {source_lss} -tgtlss {target_lss} {pprc_ports}'
+        command_list.append(command)
+    return command_list
+
+
+
+def ds_mkpprc():
+    pass
 
 
 def fs_maphosts():
