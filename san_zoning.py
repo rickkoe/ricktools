@@ -176,8 +176,10 @@ def main():
     storage_tup = make_storage_list()
     storage_list = storage_tup[0]
     even_odd_dict = storage_tup[1]
-    pprc_path_commands = ds_mkpprcpath(storage_list, even_odd_dict)
-    iterate_list(pprc_path_commands)
+    mkpprcpath_commands = ds_mkpprcpath(storage_list, even_odd_dict)
+    mkpprc_commands = ds_mkpprc()
+    iterate_list(mkpprcpath_commands)
+    iterate_list(mkpprc_commands)
 
     """
     fabric_dict = create_fabric_dict()
@@ -235,6 +237,23 @@ def make_storage_list():
     return storage_list,even_odd_dict
 
 
+def ds_mkpprc():
+    command_list = []
+    command_dict = defaultdict(list)
+    for index, row in df_ds8k_pprc.iterrows():
+        source_id = f'IBM.2107-{row["source_id"]}'
+        target_id = f'IBM.2107-{row["target_id"]}'
+        copy_type = row['type']
+        source_start = str(row['source_start'])
+        source_end = str(row['source_end'])
+        target_start = str(row['target_start'])
+        target_end = str(row['target_end'])
+        command = f'mkpprc -dev {source_id} -remotedev {target_id} -type {copy_type} {source_start}-{source_end}:{target_start}-{target_end}'
+        command_list.append(command)
+    return command_list
+
+
+
 def ds_mkpprcpath(storage_list, even_odd_dict):
     pprc_cols = [col for col in df_storage_list if 'pprc' in col]
     command_list = []
@@ -273,11 +292,6 @@ def ds_mkpprcpath(storage_list, even_odd_dict):
         command = f'mkpprcpath -dev {source_id} -remotedev {target_id} -remotewwnn {target_wwnn} -srclss {source_lss} -tgtlss {target_lss} {pprc_ports}'
         command_list.append(command)
     return command_list
-
-
-
-def ds_mkpprc():
-    pass
 
 
 def fs_maphosts():
