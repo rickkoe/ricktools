@@ -92,9 +92,22 @@ df_zones = table_to_df('zones')
 df_zone_lookup = pd.read_excel(workbook, sheet_name='zone_lookup')
 df_config = table_to_df('config')
 df_config.set_index("parameter", inplace = True)  # allows the column "parameter" to be index
-df_flashsystem = table_to_df('flashsystem')
-df_storage_list = table_to_df('storage_list')
-df_ds8k_pprc = table_to_df('ds8k_pprc')
+if 'flashsystem' in wb.sheetnames:
+    df_flashsystem = table_to_df('flashsystem')
+else:
+    print('WARNING:  flashsystem sheet missing')
+if 'storage_list' in wb.sheetnames:
+    df_storage_list = table_to_df('storage_list')
+else:
+    print('WARNING:  storage_list sheet missing')
+if 'ds8k_pprc' in wb.sheetnames:
+    df_ds8k_pprc = table_to_df('ds8k_pprc')
+else:
+    print('WARNING:  ds8k_pprc sheet missing')
+if 'ds8k_fb' in wb.sheetnames:
+    df_ds8k_fb = table_to_df('ds8k_fb')
+else:
+    print('WARNING:  ds8k_fb sheet missing')
 
 # Set config parameters
 san_vendor = df_config.loc['san_vendor', 'setting']
@@ -105,6 +118,7 @@ cisco_zoning_mode = df_config.loc['cisco_zoning_mode', 'setting']
 create_flashsystem_scripts = df_config.loc['flashsystem_scripts', 'setting']
 create_ds8k_ckd_scripts = df_config.loc['ds8k_ckd_scripts', 'setting']
 create_ds8k_fb_scripts = df_config.loc['ds8k_fb_scripts', 'setting']
+create_ds8k_pprc_scripts = df_config.loc['ds8k_pprc_scripts', 'setting']
 create_zoning_scripts = df_config.loc['zoning_scripts', 'setting']
 if san_vendor == 'Brocade':
     zoneset_config = 'zone config'
@@ -173,33 +187,36 @@ class Storage:
         return self.name
 
 def main():
-    storage_tup = make_storage_list()
-    storage_list = storage_tup[0]
-    even_odd_dict = storage_tup[1]
-    mkpprcpath_commands = ds_mkpprcpath(storage_list, even_odd_dict)
-    mkpprc_commands = ds_mkpprc()
-    iterate_list(mkpprcpath_commands)
-    iterate_list(mkpprc_commands)
-
-    """
+    mkvdisk_command_dict = {}
+    mkhost_command_dict = {}
+    host_map_command_dict = {}
+    mkpprcpath_command_dict = {}
+    mkpprc_command_dict = {}
+    if 'storage_list' in wb.sheetnames:
+        storage_tup = make_storage_list()
+        storage_list = storage_tup[0]
+        even_odd_dict = storage_tup[1]
+        mkpprcpath_command_dict = ds_mkpprcpath(storage_list, even_odd_dict)
+        mkpprc_command_dict = ds_mkpprc(storage_list)
     fabric_dict = create_fabric_dict()
     port_dict = create_port_dict(fabric_dict)
-    host_list = create_host_list(fabric_dict)
+    # host_list = create_host_list(fabric_dict)
     zone_dict = create_zone_dict(fabric_dict, port_dict)
-    mkvdisk_command_dict = fs_maphosts()[0]
-    host_map_command_dict = fs_maphosts()[1]
+    # mkvdisk_command_dict = fs_maphosts()[0]
+    # host_map_command_dict = fs_maphosts()[1]
     alias_command_dict = create_alias_command_dict(port_dict)
     zone_command_dict = create_zone_command_dict(zone_dict)
     zoneset_command_dict = create_zoneset_command_dict(zone_dict)
-    mkhost_command_dict = create_mkhost_command_dict(host_list)
+    # mkhost_command_dict = create_mkhost_command_dict(host_list)
     write_to_file(alias_command_dict,
                   zone_command_dict, 
                   zoneset_command_dict, 
                   mkhost_command_dict,
                   mkvdisk_command_dict,
-                  host_map_command_dict
+                  host_map_command_dict,
+                  mkpprcpath_command_dict,
+                  mkpprc_command_dict
                   )
-    """
 
 
 def make_storage_list():
@@ -237,26 +254,27 @@ def make_storage_list():
     return storage_list,even_odd_dict
 
 
-def ds_mkpprc():
-    command_list = []
+def ds_mkpprc(storage_list):
     command_dict = defaultdict(list)
     for index, row in df_ds8k_pprc.iterrows():
         source_id = f'IBM.2107-{row["source_id"]}'
         target_id = f'IBM.2107-{row["target_id"]}'
+        for storage in storage_list:
+            if storage.system_id == row['source_id']:
+                source_storage = storage
         copy_type = row['type']
         source_start = str(row['source_start'])
         source_end = str(row['source_end'])
         target_start = str(row['target_start'])
         target_end = str(row['target_end'])
         command = f'mkpprc -dev {source_id} -remotedev {target_id} -type {copy_type} {source_start}-{source_end}:{target_start}-{target_end}'
-        command_list.append(command)
-    return command_list
-
+        command_dict[source_storage].append(command)
+    return command_dict
 
 
 def ds_mkpprcpath(storage_list, even_odd_dict):
     pprc_cols = [col for col in df_storage_list if 'pprc' in col]
-    command_list = []
+    command_dict = defaultdict(list)
     for index, row in df_ds8k_pprc.iterrows():
         pprc_even_port_list = []
         pprc_odd_port_list = []
@@ -290,14 +308,43 @@ def ds_mkpprcpath(storage_list, even_odd_dict):
         else:
             pprc_ports = pprc_both_ports                                       
         command = f'mkpprcpath -dev {source_id} -remotedev {target_id} -remotewwnn {target_wwnn} -srclss {source_lss} -tgtlss {target_lss} {pprc_ports}'
-        command_list.append(command)
-    return command_list
+        command_dict[source_storage].append(command)
+        if row['create_reverse_paths'] == 'x':
+            print(f'reverse: {target_storage.serial_number}')
+            reverse_command = f'mkpprcpath -dev {target_id} -remotedev {source_id} -remotewwnn {source_storage.wwnn} -srclss {target_lss} -tgtlss {source_lss} {pprc_ports}'
+            command_dict[target_storage].append(reverse_command)
+
+    return command_dict
 
 
 def fs_maphosts():
     mkvdisk_command_dict = defaultdict(list)
     map_command_dict = defaultdict(list)
     for index, row in df_flashsystem.iterrows():
+        map_command = row['map_command']
+        volume_command = row['volume_command']
+        thin = row['thin_provisioned']
+        host_qty = row['host_qty']
+        volume_qty = row['volume_qty']
+        host_name = row['host_name']
+        volume_name = row['volume_name']
+        volume_size = row['volume_size']
+        volume_start = row['volume_start']
+        storage_system = row['storage_system']
+        pool = row['pool']
+        if volume_command == 'yes' and thin == 'yes':
+            mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_qty - 1};i++)); do svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 80% -mdiskgrp {pool} -name {volume_name}_$i -size {volume_size} -unit gb; done')
+        elif volume_command == 'yes' and thin == 'no':
+            mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_qty - 1};i++)); do svctask mkvdisk -mdiskgrp 0 -name {volume_name}_$i -size {volume_size} -unit gb; done')
+        for i in range(host_qty):
+            if map_command == 'yes':
+                map_command_dict[storage_system].append(fs_map(i, host_name, volume_name, volume_qty, host_qty))
+    return dict(mkvdisk_command_dict),dict(map_command_dict)
+
+
+def ds_maphosts():
+    map_command_dict = defaultdict(list)
+    for index, row in df_ds8k_fb.iterrows():
         map_command = row['map_command']
         volume_command = row['volume_command']
         thin = row['thin_provisioned']
@@ -584,7 +631,7 @@ def create_zoneset_command_dict(zone_dict):
     return zoneset_command_dict
 
 
-def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict, mkvdisk_command_dict, hostmap_command_dict):
+def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict, mkvdisk_command_dict, hostmap_command_dict, mkpprcpath_command_dict, mkpprc_command_dict):
     file_open = False
     if create_zoning_scripts == 'yes':
         for fabric, alias_commands in alias_command_dict.items():
@@ -646,10 +693,35 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, m
                     mode = 'a'
             else:
                 mode = 'wt'
-            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{storage_filename}.txt'), mode='a', encoding='utf-8') as script_file:
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{storage_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
                 script_file.write(f'\n\n### MKVDISKHOSTMAP COMMANDS FOR {fs.upper()}')
                 for command in hostmap_commands:
                     script_file.write('\n' + command)
+        file_open = False
+    if create_ds8k_pprc_scripts == 'yes':
+        for ds, mkpprcpath_commands in mkpprcpath_command_dict.items():
+            print(f'Writing DS8000 mkpprcpath commands for {customer_name} {ds}')
+            if file_open:
+                    mode = 'a'
+            else:
+                mode = 'wt'
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{ds.name}_{storage_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
+                script_file.write(f'### MKPPRCPATH COMMANDS FOR {ds.name.upper()}')
+                for command in mkpprcpath_commands:
+                    script_file.write('\n' + command)
+                script_file.write('\n\n')
+        file_open = True
+        for ds, mkpprc_commands in mkpprc_command_dict.items():
+            print(f'Writing DS8000 mkpprc commands for {customer_name} {ds}')
+            if file_open:
+                    mode = 'a'
+            else:
+                mode = 'wt'
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{ds.name}_{storage_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
+                script_file.write(f'### MKPPRC COMMANDS FOR {ds.name.upper()}')
+                for command in mkpprc_commands:
+                    script_file.write('\n' + command)
+                script_file.write('\n\n')
         file_open = True
     
 
