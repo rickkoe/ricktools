@@ -9,7 +9,7 @@ from openpyxl import load_workbook, Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 import importlib
 # Import custom functions
-from my_mods.general import iterate_dict, iterate_list, clear, hex2dec, dec2hex, is_even
+from my_mods.general import iterate_dict, iterate_list, clear, hex2dec, dec2hex, dec2hex2x, is_even
 from my_mods.san import wwpn_colonizer
 from my_mods.san_cheatsheet import brocade_cheatsheet, cisco_cheatsheet
 import config
@@ -187,6 +187,8 @@ class Storage:
         return self.name
 
 def main():
+    ds_host_map_command_dict = ds_maphosts()
+    iterate_dict(ds_host_map_command_dict)
     mkvdisk_command_dict = {}
     mkhost_command_dict = {}
     host_map_command_dict = {}
@@ -203,7 +205,8 @@ def main():
     # host_list = create_host_list(fabric_dict)
     zone_dict = create_zone_dict(fabric_dict, port_dict)
     # mkvdisk_command_dict = fs_maphosts()[0]
-    # host_map_command_dict = fs_maphosts()[1]
+    fs_host_map_command_dict = fs_maphosts()[1]
+    ds_host_map_command_dict = ds_maphosts()
     alias_command_dict = create_alias_command_dict(port_dict)
     zone_command_dict = create_zone_command_dict(zone_dict)
     zoneset_command_dict = create_zoneset_command_dict(zone_dict)
@@ -213,7 +216,8 @@ def main():
                   zoneset_command_dict, 
                   mkhost_command_dict,
                   mkvdisk_command_dict,
-                  host_map_command_dict,
+                  fs_host_map_command_dict,
+                  ds_host_map_command_dict,
                   mkpprcpath_command_dict,
                   mkpprc_command_dict
                   )
@@ -267,8 +271,10 @@ def ds_mkpprc(storage_list):
         source_end = str(row['source_end'])
         target_start = str(row['target_start'])
         target_end = str(row['target_end'])
-        command = f'mkpprc -dev {source_id} -remotedev {target_id} -type {copy_type} {source_start}-{source_end}:{target_start}-{target_end}'
-        command_dict[source_storage].append(command)
+        print_command = row['print']
+        if print_command == 'x':
+            command = f'mkpprc -dev {source_id} -remotedev {target_id} -type {copy_type} {source_start}-{source_end}:{target_start}-{target_end}'
+            command_dict[source_storage].append(command)
     return command_dict
 
 
@@ -289,6 +295,7 @@ def ds_mkpprcpath(storage_list, even_odd_dict):
         target_wwnn = row['target_wwnn']
         source_lss = str(row['source_start'])[:2]
         target_lss = str(row['target_start'])[:2]
+        print_command = row['print']
         for pprc_port in pprc_cols:
             even_odd = even_odd_dict[pprc_port]
             if source_storage.pprc_dict[pprc_port] and target_storage.pprc_dict[pprc_port]:
@@ -306,13 +313,14 @@ def ds_mkpprcpath(storage_list, even_odd_dict):
         elif pprc_odd_ports and not is_even(hex2dec(source_lss)):
             pprc_ports = pprc_odd_ports
         else:
-            pprc_ports = pprc_both_ports                                       
-        command = f'mkpprcpath -dev {source_id} -remotedev {target_id} -remotewwnn {target_wwnn} -srclss {source_lss} -tgtlss {target_lss} {pprc_ports}'
-        command_dict[source_storage].append(command)
-        if row['create_reverse_paths'] == 'x':
-            print(f'reverse: {target_storage.serial_number}')
-            reverse_command = f'mkpprcpath -dev {target_id} -remotedev {source_id} -remotewwnn {source_storage.wwnn} -srclss {target_lss} -tgtlss {source_lss} {pprc_ports}'
-            command_dict[target_storage].append(reverse_command)
+            pprc_ports = pprc_both_ports
+        if print_command == 'x':                                      
+            command = f'mkpprcpath -dev {source_id} -remotedev {target_id} -remotewwnn {target_wwnn} -srclss {source_lss} -tgtlss {target_lss} {pprc_ports}'
+            command_dict[source_storage].append(command)
+            if row['create_reverse_paths'] == 'x':
+                print(f'reverse: {target_storage.serial_number}')
+                reverse_command = f'mkpprcpath -dev {target_id} -remotedev {source_id} -remotewwnn {source_storage.wwnn} -srclss {target_lss} -tgtlss {source_lss} {pprc_ports}'
+                command_dict[target_storage].append(reverse_command)
 
     return command_dict
 
@@ -345,25 +353,17 @@ def fs_maphosts():
 def ds_maphosts():
     map_command_dict = defaultdict(list)
     for index, row in df_ds8k_fb.iterrows():
-        map_command = row['map_command']
-        volume_command = row['volume_command']
-        thin = row['thin_provisioned']
         host_qty = row['host_qty']
         volume_qty = row['volume_qty']
         host_name = row['host_name']
         volume_name = row['volume_name']
-        volume_size = row['volume_size']
         volume_start = row['volume_start']
         storage_system = row['storage_system']
-        pool = row['pool']
-        if volume_command == 'yes' and thin == 'yes':
-            mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_qty - 1};i++)); do svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 80% -mdiskgrp {pool} -name {volume_name}_$i -size {volume_size} -unit gb; done')
-        elif volume_command == 'yes' and thin == 'no':
-            mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_qty - 1};i++)); do svctask mkvdisk -mdiskgrp 0 -name {volume_name}_$i -size {volume_size} -unit gb; done')
+        storage_image = row['storage_image']
+        lss = row['lss']
         for i in range(host_qty):
-            if map_command == 'yes':
-                map_command_dict[storage_system].append(fs_map(i, host_name, volume_name, volume_qty, host_qty))
-    return dict(mkvdisk_command_dict),dict(map_command_dict)
+            map_command_dict[storage_system].append(ds_map(i, storage_image, lss, host_name, volume_name, volume_qty, host_qty))
+    return dict(map_command_dict)
 
 
 def fs_map(group, host_name, volume_name, volume_qty, host_qty ):
@@ -378,6 +378,19 @@ def fs_map(group, host_name, volume_name, volume_qty, host_qty ):
     start = range_list[group-1][0]
     end = range_list[group-1][1]
     return f'for ((i={start};i<={end};i++)); do svctask mkvdiskhostmap -force -host {host_name}_{group:02d} {volume_name}_$i; done'
+
+def ds_map(group, storage_image, lss, host_name, volume_name, volume_qty, host_qty ):
+    group += 1
+    volumes_per_group = volume_qty/host_qty
+    range_list = []
+    starting_volume = 0
+    for i in range(host_qty):
+        starting_volume = i * volumes_per_group
+        ending_volume = starting_volume + volumes_per_group - 1
+        range_list.append((int(starting_volume), int(ending_volume)))
+    start = range_list[group-1][0]
+    end = range_list[group-1][1]
+    return f'chhost -dev {storage_image} -action map -volume {lss}{dec2hex2x(start).upper()}-{lss}{dec2hex2x(end).upper()} {host_name}_{group:02d}'
 
 
 
@@ -631,7 +644,7 @@ def create_zoneset_command_dict(zone_dict):
     return zoneset_command_dict
 
 
-def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict, mkvdisk_command_dict, hostmap_command_dict, mkpprcpath_command_dict, mkpprc_command_dict):
+def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict, mkvdisk_command_dict, fs_hostmap_command_dict, ds_hostmap_command_dict, mkpprcpath_command_dict, mkpprc_command_dict):
     file_open = False
     if create_zoning_scripts == 'yes':
         for fabric, alias_commands in alias_command_dict.items():
@@ -687,7 +700,7 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, m
                 for command in mkvdisk_commands:
                     script_file.write('\n' + command)
         file_open = True
-        for fs, hostmap_commands in hostmap_command_dict.items():
+        for fs, hostmap_commands in fs_hostmap_command_dict.items():
             print(f'Writing FlashSystem host mapping commands for {customer_name} {fs}')
             if file_open:
                     mode = 'a'
@@ -723,6 +736,18 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, m
                     script_file.write('\n' + command)
                 script_file.write('\n\n')
         file_open = True
+    if create_ds8k_fb_scripts == 'yes':
+        for ds, hostmap_commands in ds_hostmap_command_dict.items():
+            print(f'Writing DS8000 host mapping commands for {customer_name} {ds}')
+            if file_open:
+                    mode = 'a'
+            else:
+                mode = 'wt'
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{ds}_{storage_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
+                script_file.write(f'### CHHOST COMMANDS FOR {ds.upper()}')
+                for command in hostmap_commands:
+                    script_file.write('\n' + command)
+        file_open = False
     
 
 

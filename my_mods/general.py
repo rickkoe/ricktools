@@ -60,6 +60,9 @@ def hex2dec(hex_value):
 def dec2hex(dec_value):
     return format(dec_value, '04x')
 
+def dec2hex2x(dec_value):
+    return format(dec_value, '02x')
+
 
 def input_number(prompt):
     while True:
