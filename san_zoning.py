@@ -202,15 +202,15 @@ def main():
         mkpprc_command_dict = ds_mkpprc(storage_list)
     fabric_dict = create_fabric_dict()
     port_dict = create_port_dict(fabric_dict)
-    # host_list = create_host_list(fabric_dict)
+    host_list = create_host_list(fabric_dict)
     zone_dict = create_zone_dict(fabric_dict, port_dict)
-    # mkvdisk_command_dict = fs_maphosts()[0]
+    mkvdisk_command_dict = fs_maphosts()[0]
     fs_host_map_command_dict = fs_maphosts()[1]
     ds_host_map_command_dict = ds_maphosts()
     alias_command_dict = create_alias_command_dict(port_dict)
     zone_command_dict = create_zone_command_dict(zone_dict)
     zoneset_command_dict = create_zoneset_command_dict(zone_dict)
-    # mkhost_command_dict = create_mkhost_command_dict(host_list)
+    mkhost_command_dict = create_mkhost_command_dict(host_list)
     write_to_file(alias_command_dict,
                   zone_command_dict, 
                   zoneset_command_dict, 
