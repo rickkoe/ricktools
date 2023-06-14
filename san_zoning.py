@@ -120,6 +120,7 @@ create_ds8k_ckd_scripts = df_config.loc['ds8k_ckd_scripts', 'setting']
 create_ds8k_fb_scripts = df_config.loc['ds8k_fb_scripts', 'setting']
 create_ds8k_pprc_scripts = df_config.loc['ds8k_pprc_scripts', 'setting']
 create_zoning_scripts = df_config.loc['zoning_scripts', 'setting']
+include_cheatsheet = False
 if san_vendor == 'Brocade':
     zoneset_config = 'zone config'
     san_cheatsheet = brocade_cheatsheet
@@ -187,30 +188,44 @@ class Storage:
         return self.name
 
 def main():
-    ds_host_map_command_dict = ds_maphosts()
-    iterate_dict(ds_host_map_command_dict)
-    mkvdisk_command_dict = {}
+    alias_command_dict = {}
+    zone_command_dict = {}
+    zoneset_command_dict = {}
     mkhost_command_dict = {}
-    host_map_command_dict = {}
+    mkvdisk_command_dict = {}
+    fs_host_map_command_dict = {}
+    ds_host_map_command_dict = {}
     mkpprcpath_command_dict = {}
     mkpprc_command_dict = {}
-    if 'storage_list' in wb.sheetnames:
-        storage_tup = make_storage_list()
-        storage_list = storage_tup[0]
-        even_odd_dict = storage_tup[1]
-        mkpprcpath_command_dict = ds_mkpprcpath(storage_list, even_odd_dict)
-        mkpprc_command_dict = ds_mkpprc(storage_list)
-    fabric_dict = create_fabric_dict()
-    port_dict = create_port_dict(fabric_dict)
-    host_list = create_host_list(fabric_dict)
-    zone_dict = create_zone_dict(fabric_dict, port_dict)
-    mkvdisk_command_dict = fs_maphosts()[0]
-    fs_host_map_command_dict = fs_maphosts()[1]
-    ds_host_map_command_dict = ds_maphosts()
-    alias_command_dict = create_alias_command_dict(port_dict)
-    zone_command_dict = create_zone_command_dict(zone_dict)
-    zoneset_command_dict = create_zoneset_command_dict(zone_dict)
-    mkhost_command_dict = create_mkhost_command_dict(host_list)
+    if create_zoning_scripts == 'yes':
+        fabric_dict = create_fabric_dict()
+        port_dict = create_port_dict(fabric_dict)
+        zone_dict = create_zone_dict(fabric_dict, port_dict)
+        alias_command_dict = create_alias_command_dict(port_dict)
+        zone_command_dict = create_zone_command_dict(zone_dict)
+        zoneset_command_dict = create_zoneset_command_dict(zone_dict)
+    if create_flashsystem_scripts == 'yes':
+        fabric_dict = create_fabric_dict()
+        mkvdisk_command_dict = {}
+        host_list = create_host_list(fabric_dict)
+        mkhost_command_dict = {}
+        mkhost_command_dict = create_mkhost_command_dict(host_list)
+        host_map_command_dict = {}
+        mkvdisk_command_dict = fs_maphosts()[0]
+        fs_host_map_command_dict = fs_maphosts()[1]
+    if create_ds8k_fb_scripts == 'yes':
+        ds_host_map_command_dict = ds_maphosts()
+        mkpprcpath_command_dict = {}
+        mkpprc_command_dict = {}
+        ds_host_map_command_dict = ds_maphosts()
+        if 'storage_list' in wb.sheetnames:
+            storage_tup = make_storage_list()
+            storage_list = storage_tup[0]
+            even_odd_dict = storage_tup[1]
+            mkpprcpath_command_dict = ds_mkpprcpath(storage_list, even_odd_dict)
+            mkpprc_command_dict = ds_mkpprc(storage_list)
+
+
     write_to_file(alias_command_dict,
                   zone_command_dict, 
                   zoneset_command_dict, 
@@ -338,15 +353,25 @@ def fs_maphosts():
         volume_name = row['volume_name']
         volume_size = row['volume_size']
         volume_start = row['volume_start']
+        if volume_start:
+            if isinstance(volume_start, str):
+                volume_count_length = len(volume_start)
+            else:
+                volume_count_length = 1
+            volume_start = int(volume_start)
+            volume_end = volume_start + volume_qty - 1
         storage_system = row['storage_system']
         pool = row['pool']
         if volume_command == 'yes' and thin == 'yes':
-            mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_qty - 1};i++)); do svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 80% -mdiskgrp {pool} -name {volume_name}_$i -size {volume_size} -unit gb; done')
+            if volume_qty > 1:
+                mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_end};i++)); do j=$(printf "%0{volume_count_length}d" "$i"); svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 0 -mdiskgrp {pool} -name {volume_name}_$j -size {volume_size} -unit gb; done')
+            else:
+                mkvdisk_command_dict[storage_system].append(f'svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 0 -mdiskgrp {pool} -name {volume_name} -size {volume_size} -unit gb')
         elif volume_command == 'yes' and thin == 'no':
-            mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_qty - 1};i++)); do svctask mkvdisk -mdiskgrp 0 -name {volume_name}_$i -size {volume_size} -unit gb; done')
+            mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_qty - 1};i++)); do j=$(printf "%0{volume_count_length}d" "$i"); svctask mkvdisk -mdiskgrp 0 -name {volume_name}_$j -size {volume_size} -unit gb; done')
         for i in range(host_qty):
             if map_command == 'yes':
-                map_command_dict[storage_system].append(fs_map(i, host_name, volume_name, volume_qty, host_qty))
+                map_command_dict[storage_system].append(fs_map(i, host_name, volume_name, volume_qty, host_qty, volume_count_length))
     return dict(mkvdisk_command_dict),dict(map_command_dict)
 
 
@@ -366,7 +391,7 @@ def ds_maphosts():
     return dict(map_command_dict)
 
 
-def fs_map(group, host_name, volume_name, volume_qty, host_qty ):
+def fs_map(group, host_name, volume_name, volume_qty, host_qty, volume_count_length):
     group += 1
     volumes_per_group = volume_qty/host_qty
     range_list = []
@@ -377,7 +402,7 @@ def fs_map(group, host_name, volume_name, volume_qty, host_qty ):
         range_list.append((int(starting_volume), int(ending_volume)))
     start = range_list[group-1][0]
     end = range_list[group-1][1]
-    return f'for ((i={start};i<={end};i++)); do svctask mkvdiskhostmap -force -host {host_name}_{group:02d} {volume_name}_$i; done'
+    return f'for ((i={start};i<={end};i++)); do j=$(printf "%0{volume_count_length}d" "$i"); svctask mkvdiskhostmap -force -host {host_name}_{group:02d} {volume_name}_$j; done'
 
 def ds_map(group, storage_image, lss, host_name, volume_name, volume_qty, host_qty ):
     group += 1
@@ -639,6 +664,7 @@ def create_zoneset_command_dict(zone_dict):
                     zoneset_command_dict[fabric].append(f'member {zone}')
             zoneset_command_dict[fabric].append(f'zoneset activate name {fabric.active_zoneset_config} vsan {fabric.vsan}')
             if cisco_zoning_mode == 'enhanced':
+                zoneset_command_dict[fabric].append(f'show zone pending-diff vsan {fabric.vsan}')
                 zoneset_command_dict[fabric].append(f'zone commit vsan {fabric.vsan}')
             zoneset_command_dict[fabric].append(f'\ncopy run start')
     return zoneset_command_dict
@@ -646,10 +672,11 @@ def create_zoneset_command_dict(zone_dict):
 
 def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict, mkvdisk_command_dict, fs_hostmap_command_dict, ds_hostmap_command_dict, mkpprcpath_command_dict, mkpprc_command_dict):
     file_open = False
+    mode = 'wt'
     if create_zoning_scripts == 'yes':
         for fabric, alias_commands in alias_command_dict.items():
             print(f'Writing alias commands for {customer_name} {fabric}')
-            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_{zoning_filename}.txt'), mode='wt', encoding='utf-8') as script_file:
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_{zoning_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
                 script_file.write(f'### ALIAS COMMANDS FOR {fabric.name.upper()}')
                 if san_vendor == 'Cisco':
                     script_file.write('\nconfig\ndevice-alias database')
@@ -678,13 +705,14 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, m
                 script_file.write(f'\n\n### {zoneset_config.upper()} COMMANDS FOR {fabric.name.upper()}')
                 for command in zoneset_commands:
                     script_file.write('\n' + command)
-                for command in san_cheatsheet:
-                    script_file.write('\n' + command)
+                if include_cheatsheet:
+                    for command in san_cheatsheet:
+                        script_file.write('\n' + command)
     file_open = False
     if create_flashsystem_scripts == 'yes':
         for fs, host_commands in mkhost_command_dict.items():
             print(f'Writing FlashSystem host commands for {customer_name} {fs}')
-            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{storage_filename}.txt'), mode='wt', encoding='utf-8') as script_file:
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{storage_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
                 script_file.write(f'### MKHOST COMMANDS FOR {fs.upper()}')
                 for command in host_commands:
                     script_file.write('\n' + command)
