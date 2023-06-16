@@ -577,6 +577,9 @@ def create_zone_dict(fabric_dict, port_dict):
                         # zone_member_list.append(init)
                         this_zone = Zone(zone_name, fabric, zone_type, zone_member_list, exists)
                         zone_list.append(this_zone)
+                elif zone_ratio == 'all-to-all':
+                    this_zone = Zone(name, fabric, zone_type, member_list, exists)
+                    zone_list.append(this_zone)
                     
             else:
                 this_zone = Zone(name, fabric, zone_type, member_list, exists)
