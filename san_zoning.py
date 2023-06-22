@@ -340,6 +340,30 @@ def ds_mkpprcpath(storage_list, even_odd_dict):
     return command_dict
 
 
+# def fs_mkrelationship(volume_range):
+#     name = fs_vdisk_name(volume_range)
+#     if volume_range.load_source == 0:
+#         range_start = 0
+#     else:
+#         range_start = 1
+#     return f'for ((i={range_start};i<={volume_range.qty - 1};i++)); do svctask mkrcrelationship -aux {name}_$i -cluster {aux_storage.cluster_id} -global -master {name}_$i -name rc_{volume_range.lpar}_$i; done'
+
+# def fs_mkrcconsistgrp(name):
+#     return f'mkrcconsistgrp -cluster {aux_storage.cluster_id} -name cg_{name}'
+
+
+# def fs_chrcrelationship(volume_range, role, prefix=''):
+#     name = fs_vdisk_name(volume_range, prefix)
+#     if volume_range.load_source == 0:
+#         range_start = 0
+#     else:
+#         range_start = 1
+#     if role == 'consistgrp':
+#         return f'for ((i={range_start};i<={volume_range.qty - 1};i++)); do svctask chrcrelationship -{role} cg_{volume_range.lpar} rc_{volume_range.lpar}_$i; done'
+#     else:
+#         return f'for ((i={range_start};i<={volume_range.qty - 1};i++)); do svctask chrcrelationship -{role} {name}_$i rc_{volume_range.lpar}_$i; done'
+
+
 def fs_maphosts():
     mkvdisk_command_dict = defaultdict(list)
     map_command_dict = defaultdict(list)
@@ -364,11 +388,11 @@ def fs_maphosts():
         pool = row['pool']
         if volume_command == 'yes' and thin == 'yes':
             if volume_qty > 1:
-                mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_end};i++)); do j=$(printf "%0{volume_count_length}d" "$i"); svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 0 -mdiskgrp {pool} -name {volume_name}_$j -size {volume_size} -unit gb; done')
+                mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_end};i++)); do j=$(printf "%0{volume_count_length}d" "$i"); svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 0 -mdiskgrp {pool} -name {volume_name}$j -size {volume_size} -unit gb; done')
             else:
                 mkvdisk_command_dict[storage_system].append(f'svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 0 -mdiskgrp {pool} -name {volume_name} -size {volume_size} -unit gb')
         elif volume_command == 'yes' and thin == 'no':
-            mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_qty - 1};i++)); do j=$(printf "%0{volume_count_length}d" "$i"); svctask mkvdisk -mdiskgrp 0 -name {volume_name}_$j -size {volume_size} -unit gb; done')
+            mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_qty - 1};i++)); do j=$(printf "%0{volume_count_length}d" "$i"); svctask mkvdisk -mdiskgrp 0 -name {volume_name}$j -size {volume_size} -unit gb; done')
         for i in range(host_qty):
             if map_command == 'yes':
                 map_command_dict[storage_system].append(fs_map(i, host_name, volume_name, volume_qty, host_qty, volume_count_length))

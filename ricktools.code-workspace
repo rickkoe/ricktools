@@ -5,6 +5,12 @@
 		},
 		{
 			"path": "../koetool"
+		},
+		{
+			"path": "../Dev/ARS"
+		},
+		{
+			"path": "../Dev/medtronic_scripting"
 		}
 	]
 }
