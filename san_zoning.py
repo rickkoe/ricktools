@@ -595,10 +595,9 @@ def create_zone_dict(fabric_dict, port_dict):
                         if member.tag == 'init':
                             init_list.append(member)
                     for init in init_list:
+                        zone_member_list = []
                         zone_name = f'{init.alias}_{name}'
-                        zone_member_list = target_list
-                        print(f'{zone_name}')
-                        # zone_member_list.append(init)
+                        zone_member_list = target_list + [init]
                         this_zone = Zone(zone_name, fabric, zone_type, zone_member_list, exists)
                         zone_list.append(this_zone)
                 elif zone_ratio == 'all-to-all':
