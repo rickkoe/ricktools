@@ -121,6 +121,12 @@ create_ds8k_fb_scripts = df_config.loc['ds8k_fb_scripts', 'setting']
 create_ds8k_pprc_scripts = df_config.loc['ds8k_pprc_scripts', 'setting']
 create_zoning_scripts = df_config.loc['zoning_scripts', 'setting']
 include_cheatsheet = False
+changevols_prefix = df_config.loc['changevols_prefix', 'setting']
+changevols_suffix = df_config.loc['changevols_suffix', 'setting']
+if changevols_prefix == None:
+    changevols_prefix = ''
+if changevols_suffix == None:
+    changevols_suffix = ''
 if san_vendor == 'Brocade':
     zoneset_config = 'zone config'
     san_cheatsheet = brocade_cheatsheet
@@ -196,6 +202,10 @@ def main():
     fs_host_map_command_dict = {}
     ds_host_map_command_dict = {}
     mkpprcpath_command_dict = {}
+    mkrcrelationship_command_dict = {}
+    mkrcconsistgrp_command_dict = {}
+    chrcrelationship_command_dict = {}
+    mkvdisk_changevols_command_dict = {}
     mkpprc_command_dict = {}
     if create_zoning_scripts == 'yes':
         fabric_dict = create_fabric_dict()
@@ -213,6 +223,10 @@ def main():
         host_map_command_dict = {}
         mkvdisk_command_dict = fs_maphosts()[0]
         fs_host_map_command_dict = fs_maphosts()[1]
+        mkvdisk_changevols_command_dict = fs_maphosts()[2]
+        mkrcrelationship_command_dict = fs_maphosts()[3]
+        mkrcconsistgrp_command_dict = fs_maphosts()[4]
+        chrcrelationship_command_dict = fs_maphosts()[5]
     if create_ds8k_fb_scripts == 'yes':
         ds_host_map_command_dict = ds_maphosts()
         mkpprcpath_command_dict = {}
@@ -234,7 +248,11 @@ def main():
                   fs_host_map_command_dict,
                   ds_host_map_command_dict,
                   mkpprcpath_command_dict,
-                  mkpprc_command_dict
+                  mkpprc_command_dict,
+                  mkrcrelationship_command_dict,
+                  mkrcconsistgrp_command_dict,
+                  chrcrelationship_command_dict,
+                  mkvdisk_changevols_command_dict
                   )
 
 
@@ -366,11 +384,24 @@ def ds_mkpprcpath(storage_list, even_odd_dict):
 
 def fs_maphosts():
     mkvdisk_command_dict = defaultdict(list)
+    mkvdisk_changevols_command_dict = defaultdict(list)
     map_command_dict = defaultdict(list)
+    mkrcrelationship_command_dict = defaultdict(list)
+    mkrcconsistgrp_command_dict = defaultdict(list)
+    chrcrelationship_command_dict = defaultdict(list)
     for index, row in df_flashsystem.iterrows():
         map_command = row['map_command']
         volume_command = row['volume_command']
         thin = row['thin_provisioned']
+        remote_copy = row['remote_copy']
+        changevols = row['change_volumes']
+        mkrcrelationship = row['mkrcrelationship']
+        mkrcconsistgrp = row['mkrcconsistgrp']
+        chrcrelationship = row['chrcrelationship']
+        assign_masterchangevols = row['assign_masterchangevols']
+        assign_auxchangevols = row['assign_auxchangevols']
+        cycle_mode = row['cycle_mode']
+        consistgrp = row['consistgrp']
         host_qty = row['host_qty']
         volume_qty = row['volume_qty']
         host_name = row['host_name']
@@ -385,19 +416,43 @@ def fs_maphosts():
                 volume_count_length = 1
             volume_start = int(volume_start)
             volume_end = volume_start + volume_qty - 1
+        original_storage_system = row['original_storage_system']
         storage_system = row['storage_system']
         pool = row['pool']
         if volume_command == 'yes' and thin == 'yes':
             if volume_qty > 1:
                 mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_end};i++)); do j=$(printf "%0{volume_count_length}d" "$i"); svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 0 -mdiskgrp {pool} -name {volume_name}$j -size {volume_size} -unit {unit}; done')
+                if changevols == 'yes':
+                    mkvdisk_changevols_command_dict[original_storage_system].append(f'for ((i={volume_start};i<={volume_end};i++)); do j=$(printf "%0{volume_count_length}d" "$i"); svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 0 -mdiskgrp {pool} -name {changevols_prefix}{volume_name}${{j}}{changevols_suffix} -size {volume_size} -unit {unit}; done')
+                    mkvdisk_changevols_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_end};i++)); do j=$(printf "%0{volume_count_length}d" "$i"); svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 0 -mdiskgrp {pool} -name {changevols_prefix}{volume_name}${{j}}{changevols_suffix} -size {volume_size} -unit {unit}; done')
             else:
                 mkvdisk_command_dict[storage_system].append(f'svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 0 -mdiskgrp {pool} -name {volume_name} -size {volume_size} -unit {unit}')
+                if changevols == 'yes':
+                    mkvdisk_changevols_command_dict[original_storage_system].append(f'svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 0 -mdiskgrp {pool} -name {changevols_prefix}{volume_name}{changevols_suffix} -size {volume_size} -unit {unit}')
+                    mkvdisk_changevols_command_dict[storage_system].append(f'svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 0 -mdiskgrp {pool} -name {changevols_prefix}{volume_name}${{j}}{changevols_suffix} -size {volume_size} -unit {unit}')
         elif volume_command == 'yes' and thin == 'no':
             mkvdisk_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_qty - 1};i++)); do j=$(printf "%0{volume_count_length}d" "$i"); svctask mkvdisk -mdiskgrp 0 -name {volume_name}$j -size {volume_size} -unit {unit}; done')
+            if changevols == 'yes':
+                mkvdisk_changevols_command_dict[original_storage_system].append(f'for ((i={volume_start};i<={volume_end};i++)); do j=$(printf "%0{volume_count_length}d" "$i"); svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 0 -mdiskgrp {pool} -name {changevols_prefix}{volume_name}$j{changevols_suffix} -size {volume_size} -unit {unit}; done')
+                mkvdisk_changevols_command_dict[storage_system].append(f'for ((i={volume_start};i<={volume_end};i++)); do j=$(printf "%0{volume_count_length}d" "$i"); svctask mkvdisk -autoexpand -grainsize 256 -rsize 2% -warning 0 -mdiskgrp {pool} -name {changevols_prefix}{volume_name}${{j}}{changevols_suffix} -size {volume_size} -unit {unit}; done')
         for i in range(host_qty):
             if map_command == 'yes':
                 map_command_dict[storage_system].append(fs_map(i, host_name, volume_name, volume_qty, volume_start, host_qty, volume_count_length))
-    return dict(mkvdisk_command_dict),dict(map_command_dict)
+        if remote_copy == 'yes':
+            if mkrcrelationship:
+                mkrcrelationship_command_dict[original_storage_system].append(mkrcrelationship)
+            if changevols == 'yes' and assign_masterchangevols:
+                chrcrelationship_command_dict[original_storage_system].append(assign_masterchangevols)
+            if changevols == 'yes' and assign_auxchangevols:
+                chrcrelationship_command_dict[storage_system].append(assign_auxchangevols)
+            if mkrcconsistgrp:
+                mkrcconsistgrp_command_dict[original_storage_system].append(mkrcconsistgrp)
+            if chrcrelationship:
+                chrcrelationship_command_dict[original_storage_system].append(chrcrelationship)
+            if changevols == 'yes' and cycle_mode:
+                chrcrelationship_command_dict[original_storage_system].append(cycle_mode)
+                        
+    return dict(mkvdisk_command_dict),dict(map_command_dict), dict(mkvdisk_changevols_command_dict), dict(mkrcrelationship_command_dict), dict(mkrcconsistgrp_command_dict), dict(chrcrelationship_command_dict)
 
 
 def ds_maphosts():
@@ -701,13 +756,13 @@ def create_zoneset_command_dict(zone_dict):
                     zoneset_command_dict[fabric].append(f'member {zone}')
             zoneset_command_dict[fabric].append(f'zoneset activate name {fabric.active_zoneset_config} vsan {fabric.vsan}')
             if cisco_zoning_mode == 'enhanced':
-                zoneset_command_dict[fabric].append(f'show zone pending-diff vsan {fabric.vsan}')
+                # zoneset_command_dict[fabric].append(f'show zone pending-diff vsan {fabric.vsan}')
                 zoneset_command_dict[fabric].append(f'zone commit vsan {fabric.vsan}')
             zoneset_command_dict[fabric].append(f'\ncopy run start')
     return zoneset_command_dict
 
 
-def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict, mkvdisk_command_dict, fs_hostmap_command_dict, ds_hostmap_command_dict, mkpprcpath_command_dict, mkpprc_command_dict):
+def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, mkhost_command_dict, mkvdisk_command_dict, fs_hostmap_command_dict, ds_hostmap_command_dict, mkpprcpath_command_dict, mkpprc_command_dict, mkrcrelationship_command_dict, mkrcconsistgrp_command_dict, chrcrelationship_command_dict, mkvdisk_changevols_command_dict=None):
     file_open = False
     mode = 'wt'
     if create_zoning_scripts == 'yes':
@@ -721,17 +776,14 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, m
                     script_file.write('\n' + command)
                 if san_vendor == 'Cisco':
                     script_file.write('\ndevice-alias commit')
-                file_open = True
+            mode = 'a'
         for fabric, zone_commands in zone_command_dict.items():
             print(f'Writing zone commands for {customer_name} {fabric}')
-            if file_open:
-                mode = 'a'
-            else:
-                mode = 'wt'
             with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fabric.name}_{zoning_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
                 script_file.write(f'\n\n### ZONE COMMANDS FOR {fabric.name.upper()}')
                 for command in zone_commands:
                     script_file.write('\n' + command)
+            file_open = True
         for fabric, zoneset_commands in zoneset_command_dict.items():
             print(f'Writing {zoneset_config} commands for {customer_name} {fabric}')
             if file_open:
@@ -746,6 +798,7 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, m
                     for command in san_cheatsheet:
                         script_file.write('\n' + command)
     file_open = False
+    mode = 'wt'
     if create_flashsystem_scripts == 'yes':
         for fs, host_commands in mkhost_command_dict.items():
             print(f'Writing FlashSystem host commands for {customer_name} {fs}')
@@ -765,6 +818,18 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, m
                 for command in mkvdisk_commands:
                     script_file.write('\n' + command)
         file_open = True
+        for fs, mkvdisk_commands in mkvdisk_changevols_command_dict.items():
+            print(f'Writing FlashSystem change volume commands for {customer_name} {fs}')
+            if file_open:
+                    mode = 'a'
+            else:
+                mode = 'wt'
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{storage_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
+                script_file.write(f'\n\n### MKVDISK CHANGE VOLUME COMMANDS FOR {fs.upper()}')
+                for command in mkvdisk_commands:
+                    script_file.write('\n' + command)
+        file_open = True
+
         for fs, hostmap_commands in fs_hostmap_command_dict.items():
             print(f'Writing FlashSystem host mapping commands for {customer_name} {fs}')
             if file_open:
@@ -774,6 +839,39 @@ def write_to_file(alias_command_dict, zone_command_dict, zoneset_command_dict, m
             with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{storage_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
                 script_file.write(f'\n\n### MKVDISKHOSTMAP COMMANDS FOR {fs.upper()}')
                 for command in hostmap_commands:
+                    script_file.write('\n' + command)
+        file_open = True
+        for fs, remote_copy_commands in mkrcrelationship_command_dict.items():
+            print(f'Writing FlashSystem remote copy commands for {customer_name} {fs}')
+            if file_open:
+                    mode = 'a'
+            else:
+                mode = 'wt'
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{storage_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
+                script_file.write(f'\n\n### MKRCRELATIONSHIP COMMANDS FOR {fs.upper()}')
+                for command in remote_copy_commands:
+                    script_file.write('\n' + command)
+        file_open = True
+        for fs, remote_copy_commands in mkrcconsistgrp_command_dict.items():
+            print(f'Writing FlashSystem remote copy commands for {customer_name} {fs}')
+            if file_open:
+                    mode = 'a'
+            else:
+                mode = 'wt'
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{storage_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
+                script_file.write(f'\n\n### MKRCCONSISTGRP COMMANDS FOR {fs.upper()}')
+                for command in remote_copy_commands:
+                    script_file.write('\n' + command)
+        file_open = True
+        for fs, remote_copy_commands in chrcrelationship_command_dict.items():
+            print(f'Writing FlashSystem remote copy commands for {customer_name} {fs}')
+            if file_open:
+                    mode = 'a'
+            else:
+                mode = 'wt'
+            with open(os.path.join(customer_path,config.san_output, f'{customer_name}_{fs}_{storage_filename}.txt'), mode=mode, encoding='utf-8') as script_file:
+                script_file.write(f'\n\n### CHRCRELATIONSHIP COMMANDS FOR {fs.upper()}')
+                for command in remote_copy_commands:
                     script_file.write('\n' + command)
         file_open = False
     if create_ds8k_pprc_scripts == 'yes':
