@@ -1,0 +1,36 @@
+### ALIAS COMMANDS FOR IBM LEX FAB2
+config
+device-alias database
+device-alias name DEV01B_IASP_new_01b pwwn c0:50:76:0b:7c:e7:02:a0
+device-alias name DEV01B_IASP_new_02b pwwn c0:50:76:0b:7c:e7:02:a8
+device-alias name DEV01B_IASP_new_03b pwwn c0:50:76:0b:7c:e7:02:b0
+device-alias name DEV01B_IASP_new_04b pwwn c0:50:76:0b:7c:e7:02:b8
+device-alias name DEV01B_IASP_new_05b pwwn c0:50:76:0b:7c:e7:02:c0
+device-alias name DEV01B_IASP_new_06b pwwn c0:50:76:0b:7c:e7:02:c8
+device-alias name DEV01B_IASP_new_07b pwwn c0:50:76:0b:7c:e7:02:d0
+device-alias name DEV01B_IASP_new_08b pwwn c0:50:76:0b:7c:e7:02:d8
+device-alias commit
+
+### ZONE COMMANDS FOR IBM LEX FAB2
+zone name sz_78E4R35_port3 vsan 96
+zone name sz_78E4R35_port11 vsan 96
+zone name sz_78E4R35_port19 vsan 96
+
+### ZONESET COMMANDS FOR IBM LEX FAB2
+zoneset activate name zs_VSAN96 vsan 96
+zone commit vsan 96
+copy run start
+
+####################################################################
+#                         CISCO CHEATSHEET                         #
+####################################################################
+### SHOW ZONING WITH "*" ON MEMBERS THAT ARE LOGGED INTO THE FABRIC
+  show zoneset active
+### SHOW ALL LOGGED-IN WWPNS AND ASSOCIATED DEVICE-ALIASES
+  show flogi database
+### SHOW PENDING DIFF FOR ZONING THAT HAS NOT BEEN COMMITTED
+  show zone pending-diff vsan xx
+### SHOW DEVICE-ALIAS MODE
+  show device-alias status
+### SET DEVICE-ALIAS TO ENHANCED MODE
+  device-alias mode enhanced

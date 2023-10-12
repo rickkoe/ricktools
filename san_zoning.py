@@ -201,6 +201,7 @@ def main():
         fabric_dict = create_fabric_dict()
         port_dict = create_port_dict(fabric_dict)
         zone_dict = create_zone_dict(fabric_dict, port_dict)
+        iterate_dict(zone_dict)
         alias_command_dict = create_alias_command_dict(port_dict)
         zone_command_dict = create_zone_command_dict(zone_dict)
         zoneset_command_dict = create_zoneset_command_dict(zone_dict)

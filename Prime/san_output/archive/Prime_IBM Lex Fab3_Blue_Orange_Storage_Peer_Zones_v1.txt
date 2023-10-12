@@ -1,0 +1,138 @@
+### ALIAS COMMANDS FOR IBM LEX FAB3
+config
+device-alias database
+device-alias name s_78E4R35_n1p6 pwwn 50:05:07:68:13:26:44:6C
+device-alias name s_78E4R35_n2p6 pwwn 50:05:07:68:13:26:44:6D
+device-alias name s_78E4R35_n1p14 pwwn 50:05:07:68:13:66:44:6C
+device-alias name s_78E4R35_n2p14 pwwn 50:05:07:68:13:66:44:6D
+device-alias name s_78E4R35_n1p22 pwwn 50:05:07:68:13:86:44:6C
+device-alias name s_78E4R35_n2p22 pwwn 50:05:07:68:13:86:44:6D
+device-alias name PRD03B_sys_01c pwwn c0:50:76:09:15:2d:01:82
+device-alias name PRD03B_sys_02c pwwn c0:50:76:09:15:2d:01:86
+device-alias name PRD03B_sys_03c pwwn c0:50:76:09:15:2d:01:88
+device-alias name PRD03B_CLM_01c pwwn c0:50:76:09:15:2d:01:92
+device-alias name PRD03B_CLM_02c pwwn c0:50:76:09:15:2d:01:94
+device-alias name PRD03B_CLM_03c pwwn c0:50:76:09:15:2d:01:96
+device-alias name PRD03B_CLM_04c pwwn c0:50:76:09:15:2d:01:98
+device-alias name PRD03B_CLM_05c pwwn c0:50:76:09:15:2d:04:0c
+device-alias name PRD03B_CLM_06c pwwn c0:50:76:09:15:2d:04:14
+device-alias name PRD03B_BEN_01c pwwn c0:50:76:09:15:2d:01:8c
+device-alias name PRD02B_sys_01c pwwn c0:50:76:09:15:2d:01:d6
+device-alias name PRD02B_sys_02c pwwn c0:50:76:09:15:2d:01:d8
+device-alias name PRD02B_sys_03c pwwn c0:50:76:09:15:2d:01:da
+device-alias name PRD02B_RPT_01c pwwn c0:50:76:09:15:2d:01:dc
+device-alias name PRD02B_RPT_02c pwwn c0:50:76:09:15:2d:01:de
+device-alias name PRD02B_RPT_03c pwwn c0:50:76:09:15:2d:01:e0
+device-alias name PRD02B_RPT_04c pwwn c0:50:76:09:15:2d:01:e2
+device-alias name PRD02B_RPT_05c pwwn c0:50:76:09:15:2d:01:e4
+device-alias name PRD02B_RPT_06c pwwn c0:50:76:09:15:2d:01:e6
+device-alias name PRD02B_RPT_07c pwwn c0:50:76:09:15:2d:01:e8
+device-alias name PRD02B_RPT_08c pwwn c0:50:76:09:15:2d:02:12
+device-alias name PRD02B_RPT_09c pwwn c0:50:76:09:15:2d:02:14
+device-alias name PRD02B_RPT_10c pwwn c0:50:76:09:15:2d:02:16
+device-alias name PRD02B_RPT_11c pwwn c0:50:76:09:15:2d:02:18
+device-alias name PRD02B_RPT_12c pwwn c0:50:76:09:15:2d:02:1a
+device-alias name PRD02B_RPT_13c pwwn c0:50:76:09:15:2d:04:04
+device-alias name s_75MGF60_I0200 pwwn 50:05:07:63:0B:10:11:C1
+device-alias name s_75MGF60_I0202 pwwn 50:05:07:63:0B:10:91:C1
+device-alias name s_75MGF60_I0210 pwwn 50:05:07:63:0B:11:11:C1
+device-alias name s_75MGF60_I0212 pwwn 50:05:07:63:0B:11:91:C1
+device-alias name s_75MGF60_I0230 pwwn 50:05:07:63:0B:13:11:C1
+device-alias name s_75MGF60_I0232 pwwn 50:05:07:63:0B:13:91:C1
+device-alias name DEV01B_IASP_01c pwwn c0:50:76:0a:00:67:01:3c
+device-alias name DEV01B_IASP_02c pwwn c0:50:76:0a:00:67:01:44
+device-alias name DEV01B_IASP_03c pwwn c0:50:76:0a:00:67:01:4c
+device-alias name DEV01B_IASP_04c pwwn c0:50:76:0a:00:67:01:54
+device-alias name DEV01B_IASP_05c pwwn c0:50:76:0a:00:67:01:5c
+device-alias name DEV01B_IASP_06c pwwn c0:50:76:0a:00:67:01:64
+device-alias name DEV01B_IASP_07c pwwn c0:50:76:0a:00:67:01:6c
+device-alias name DEV01B_sys_01c pwwn c0:50:76:0a:00:67:00:8c
+device-alias name DEV01B_sys_02c pwwn c0:50:76:0a:00:67:00:90
+device-alias commit
+
+### ZONE COMMANDS FOR IBM LEX FAB3
+zone name sz_78E4R35_port6 vsan 97
+member device-alias s_78E4R35_n1p6 target
+member device-alias s_78E4R35_n2p6 target
+member device-alias PRD03B_sys_01c init
+member device-alias PRD03B_CLM_01c init
+member device-alias PRD03B_CLM_04c init
+member device-alias PRD03B_BEN_01c init
+member device-alias DEV01B_IASP_01c init
+member device-alias DEV01B_IASP_04c init
+member device-alias DEV01B_IASP_07c init
+zone name sz_78E4R35_port14 vsan 97
+member device-alias s_78E4R35_n1p14 target
+member device-alias s_78E4R35_n2p14 target
+member device-alias PRD03B_sys_02c init
+member device-alias PRD03B_CLM_02c init
+member device-alias PRD03B_CLM_05c init
+member device-alias DEV01B_IASP_02c init
+member device-alias DEV01B_IASP_05c init
+member device-alias DEV01B_sys_01c init
+zone name sz_78E4R35_port22 vsan 97
+member device-alias s_78E4R35_n1p22 target
+member device-alias s_78E4R35_n2p22 target
+member device-alias PRD03B_sys_03c init
+member device-alias PRD03B_CLM_03c init
+member device-alias PRD03B_CLM_06c init
+member device-alias DEV01B_IASP_03c init
+member device-alias DEV01B_IASP_06c init
+member device-alias DEV01B_sys_02c init
+zone name sz_75MGF60_I0200 vsan 97
+member device-alias s_75MGF60_I0200 target
+member device-alias PRD02B_sys_01c init
+member device-alias PRD02B_RPT_04c init
+member device-alias PRD02B_RPT_10c init
+zone name sz_75MGF60_I0202 vsan 97
+member device-alias s_75MGF60_I0202 target
+member device-alias PRD02B_RPT_01c init
+member device-alias PRD02B_RPT_07c init
+member device-alias PRD02B_RPT_13c init
+zone name sz_75MGF60_I0210 vsan 97
+member device-alias s_75MGF60_I0210 target
+member device-alias PRD02B_sys_02c init
+member device-alias PRD02B_RPT_05c init
+member device-alias PRD02B_RPT_11c init
+zone name sz_75MGF60_I0212 vsan 97
+member device-alias s_75MGF60_I0212 target
+member device-alias PRD02B_RPT_02c init
+member device-alias PRD02B_RPT_08c init
+zone name sz_75MGF60_I0230 vsan 97
+member device-alias s_75MGF60_I0230 target
+member device-alias PRD02B_sys_03c init
+member device-alias PRD02B_RPT_06c init
+member device-alias PRD02B_RPT_12c init
+zone name sz_75MGF60_I0232 vsan 97
+member device-alias s_75MGF60_I0232 target
+member device-alias PRD02B_RPT_03c init
+member device-alias PRD02B_RPT_09c init
+
+### ZONESET COMMANDS FOR IBM LEX FAB3
+zoneset name zs_VSAN97 vsan 97
+member sz_78E4R35_port6
+member sz_78E4R35_port14
+member sz_78E4R35_port22
+member sz_75MGF60_I0200
+member sz_75MGF60_I0202
+member sz_75MGF60_I0210
+member sz_75MGF60_I0212
+member sz_75MGF60_I0230
+member sz_75MGF60_I0232
+zoneset activate name zs_VSAN97 vsan 97
+zone commit vsan 97
+copy run start
+
+####################################################################
+#                         CISCO CHEATSHEET                         #
+####################################################################
+### SHOW ZONING WITH "*" ON MEMBERS THAT ARE LOGGED INTO THE FABRIC
+  show zoneset active
+### SHOW ALL LOGGED-IN WWPNS AND ASSOCIATED DEVICE-ALIASES
+  show flogi database
+### SHOW PENDING DIFF FOR ZONING THAT HAS NOT BEEN COMMITTED
+  show zone pending-diff vsan xx
+### SHOW DEVICE-ALIAS MODE
+  show device-alias status
+### SET DEVICE-ALIAS TO ENHANCED MODE
+  device-alias mode enhanced

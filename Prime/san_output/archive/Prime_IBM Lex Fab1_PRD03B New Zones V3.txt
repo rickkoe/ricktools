@@ -1,0 +1,41 @@
+### ALIAS COMMANDS FOR IBM LEX FAB1
+config
+device-alias database
+device-alias name PRD03B_CLM_new_01a pwwn c0:50:76:0b:7b:a5:00:00
+device-alias name PRD03B_CLM_new_02a pwwn c0:50:76:0b:7b:a5:00:08
+device-alias name PRD03B_CLM_new_03a pwwn c0:50:76:0b:7b:a5:00:10
+device-alias name PRD03B_CLM_new_04a pwwn c0:50:76:0b:7b:a5:00:28
+device-alias name PRD03B_BEN_new_01a pwwn c0:50:76:0b:7b:a5:00:18
+device-alias name PRD03B_BEN_new_02a pwwn c0:50:76:0b:7b:a5:00:20
+device-alias commit
+
+### ZONE COMMANDS FOR IBM LEX FAB1
+zone name sz_78E4R35_port1 vsan 95
+member device-alias PRD03B_CLM_new_02a init
+member device-alias PRD03B_CLM_new_04a init
+zone name sz_78E4R35_port9 vsan 95
+member device-alias PRD03B_CLM_new_03a init
+member device-alias PRD03B_BEN_new_01a init
+zone name sz_78E4R35_port17 vsan 95
+member device-alias PRD03B_CLM_new_01a init
+member device-alias PRD03B_BEN_new_02a init
+
+### ZONESET COMMANDS FOR IBM LEX FAB1
+zoneset activate name zs_VSAN95 vsan 95
+zone commit vsan 95
+
+copy run start
+
+####################################################################
+#                         CISCO CHEATSHEET                         #
+####################################################################
+### SHOW ZONING WITH "*" ON MEMBERS THAT ARE LOGGED INTO THE FABRIC
+  show zoneset active
+### SHOW ALL LOGGED-IN WWPNS AND ASSOCIATED DEVICE-ALIASES
+  show flogi database
+### SHOW PENDING DIFF FOR ZONING THAT HAS NOT BEEN COMMITTED
+  show zone pending-diff vsan xx
+### SHOW DEVICE-ALIAS MODE
+  show device-alias status
+### SET DEVICE-ALIAS TO ENHANCED MODE
+  device-alias mode enhanced

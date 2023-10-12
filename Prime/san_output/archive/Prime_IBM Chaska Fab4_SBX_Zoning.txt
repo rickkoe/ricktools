@@ -1,0 +1,25 @@
+
+
+### ZONE COMMANDS FOR IBM CHASKA FAB4
+zone name sz_78E37VE_port6 vsan 78
+zone name sz_78E37VE_port12 vsan 78
+
+### ZONESET COMMANDS FOR IBM CHASKA FAB4
+zoneset activate name zs_VSAN78 vsan 78
+zone commit vsan 78
+
+copy run start
+
+####################################################################
+#                         CISCO CHEATSHEET                         #
+####################################################################
+### SHOW ZONING WITH "*" ON MEMBERS THAT ARE LOGGED INTO THE FABRIC
+  show zoneset active
+### SHOW ALL LOGGED-IN WWPNS AND ASSOCIATED DEVICE-ALIASES
+  show flogi database
+### SHOW PENDING DIFF FOR ZONING THAT HAS NOT BEEN COMMITTED
+  show zone pending-diff vsan xx
+### SHOW DEVICE-ALIAS MODE
+  show device-alias status
+### SET DEVICE-ALIAS TO ENHANCED MODE
+  device-alias mode enhanced

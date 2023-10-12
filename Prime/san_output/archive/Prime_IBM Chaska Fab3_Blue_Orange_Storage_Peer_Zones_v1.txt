@@ -1,0 +1,118 @@
+### ALIAS COMMANDS FOR IBM CHASKA FAB3
+config
+device-alias database
+device-alias name PRD02A_sys_01c pwwn c0:50:76:09:15:09:01:c0
+device-alias name PRD02A_sys_02c pwwn c0:50:76:09:15:09:01:c2
+device-alias name PRD02A_sys_03c pwwn c0:50:76:09:15:09:01:c4
+device-alias name PRD02A_RPT_01c pwwn c0:50:76:09:15:09:01:c6
+device-alias name PRD02A_RPT_02c pwwn c0:50:76:09:15:09:01:c8
+device-alias name PRD02A_RPT_03c pwwn c0:50:76:09:15:09:01:ca
+device-alias name PRD02A_RPT_04c pwwn c0:50:76:09:15:09:01:cc
+device-alias name PRD02A_RPT_05c pwwn c0:50:76:09:15:09:01:ce
+device-alias name PRD02A_RPT_06c pwwn c0:50:76:09:15:09:01:d0
+device-alias name PRD02A_RPT_07c pwwn c0:50:76:09:15:09:01:d2
+device-alias name PRD02A_RPT_08c pwwn c0:50:76:09:15:09:01:fc
+device-alias name PRD02A_RPT_09c pwwn c0:50:76:09:15:09:01:fe
+device-alias name PRD02A_RPT_10c pwwn c0:50:76:09:15:09:02:00
+device-alias name PRD02A_RPT_11c pwwn c0:50:76:09:15:09:02:02
+device-alias name PRD02A_RPT_12c pwwn c0:50:76:09:15:09:02:04
+device-alias name PRD02A_RPT_13c pwwn c0:50:76:09:15:09:02:ca
+device-alias name MGT01A_MGT_1c pwwn c0:50:76:09:15:09:02:b4
+device-alias name MGT01A_sys_01c pwwn c0:50:76:09:15:09:00:72
+device-alias name s_75MFK40_I0200 pwwn 50:05:07:63:0B:10:11:23
+device-alias name s_75MFK40_I0202 pwwn 50:05:07:63:0B:10:91:23
+device-alias name s_75MFK40_I0210 pwwn 50:05:07:63:0B:11:11:23
+device-alias name s_75MFK40_I0212 pwwn 50:05:07:63:0B:11:91:23
+device-alias name s_75MFK40_I0230 pwwn 50:05:07:63:0B:13:11:23
+device-alias name s_75MFK40_I0232 pwwn 50:05:07:63:0B:13:91:23
+device-alias name PRD03A_BEN_01c pwwn c0:50:76:09:15:09:01:44
+device-alias name PRD03A_CLM_01c pwwn c0:50:76:09:15:09:01:4c
+device-alias name PRD03A_CLM_02c pwwn c0:50:76:09:15:09:01:4e
+device-alias name PRD03A_CLM_03c pwwn c0:50:76:09:15:09:01:50
+device-alias name PRD03A_CLM_04c pwwn c0:50:76:09:15:09:01:52
+device-alias name PRD03A_CLM_05c pwwn c0:50:76:09:15:09:02:d2
+device-alias name PRD03A_CLM_06c pwwn c0:50:76:09:15:09:02:da
+device-alias name PRD03A_sys1c pwwn c0:50:76:09:15:09:01:36
+device-alias name PRD03A_sys2c pwwn c0:50:76:09:15:09:01:3a
+device-alias name PRD03A_sys3c pwwn c0:50:76:09:15:09:01:3e
+device-alias name s_78E37VE_n1p5 pwwn 50:05:07:68:10:25:7A:A9
+device-alias name s_78E37VE_n1p11 pwwn 50:05:07:68:10:37:7A:A9
+device-alias name s_78E37VE_n2p5 pwwn 50:05:07:68:10:25:7A:B4
+device-alias name s_78E37VE_n2p11 pwwn 50:05:07:68:10:37:7A:B4
+device-alias commit
+
+### ZONE COMMANDS FOR IBM CHASKA FAB3
+zone name sz_75MFK40_I0200 vsan 77
+member device-alias s_75MFK40_I0200 target
+member device-alias PRD02A_sys_01c init
+member device-alias PRD02A_RPT_04c init
+member device-alias PRD02A_RPT_10c init
+zone name sz_75MFK40_I0202 vsan 77
+member device-alias s_75MFK40_I0202 target
+member device-alias PRD02A_RPT_01c init
+member device-alias PRD02A_RPT_07c init
+member device-alias PRD02A_RPT_13c init
+zone name sz_75MFK40_I0210 vsan 77
+member device-alias s_75MFK40_I0210 target
+member device-alias PRD02A_sys_02c init
+member device-alias PRD02A_RPT_05c init
+member device-alias PRD02A_RPT_11c init
+zone name sz_75MFK40_I0212 vsan 77
+member device-alias s_75MFK40_I0212 target
+member device-alias PRD02A_RPT_02c init
+member device-alias PRD02A_RPT_08c init
+member device-alias MGT01A_MGT_1c init
+zone name sz_75MFK40_I0230 vsan 77
+member device-alias s_75MFK40_I0230 target
+member device-alias PRD02A_sys_03c init
+member device-alias PRD02A_RPT_06c init
+member device-alias PRD02A_RPT_12c init
+zone name sz_75MFK40_I0232 vsan 77
+member device-alias s_75MFK40_I0232 target
+member device-alias PRD02A_RPT_03c init
+member device-alias PRD02A_RPT_09c init
+member device-alias MGT01A_sys_01c init
+zone name sz_78E37VE_port5 vsan 77
+member device-alias s_78E37VE_n1p5 target
+member device-alias s_78E37VE_n2p5 target
+member device-alias PRD03A_BEN_01c init
+member device-alias PRD03A_CLM_02c init
+member device-alias PRD03A_CLM_04c init
+member device-alias PRD03A_sys1c init
+member device-alias PRD03A_sys3c init
+zone name sz_78E37VE_port11 vsan 77
+member device-alias s_78E37VE_n1p11 target
+member device-alias s_78E37VE_n2p11 target
+member device-alias PRD03A_CLM_01c init
+member device-alias PRD03A_CLM_03c init
+member device-alias PRD03A_CLM_05c init
+member device-alias PRD03A_CLM_06c init
+member device-alias PRD03A_sys2c init
+
+### ZONESET COMMANDS FOR IBM CHASKA FAB3
+zoneset name zs_VSAN77 vsan 77
+member sz_75MFK40_I0200
+member sz_75MFK40_I0202
+member sz_75MFK40_I0210
+member sz_75MFK40_I0212
+member sz_75MFK40_I0230
+member sz_75MFK40_I0232
+member sz_78E37VE_port5
+member sz_78E37VE_port11
+zoneset activate name zs_VSAN77 vsan 77
+zone commit vsan 77
+copy run start
+
+####################################################################
+#                         CISCO CHEATSHEET                         #
+####################################################################
+### SHOW ZONING WITH "*" ON MEMBERS THAT ARE LOGGED INTO THE FABRIC
+  show zoneset active
+### SHOW ALL LOGGED-IN WWPNS AND ASSOCIATED DEVICE-ALIASES
+  show flogi database
+### SHOW PENDING DIFF FOR ZONING THAT HAS NOT BEEN COMMITTED
+  show zone pending-diff vsan xx
+### SHOW DEVICE-ALIAS MODE
+  show device-alias status
+### SET DEVICE-ALIAS TO ENHANCED MODE
+  device-alias mode enhanced

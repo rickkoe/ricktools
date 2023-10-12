@@ -1,0 +1,39 @@
+### ALIAS COMMANDS FOR OPEN SYSTEM FABA
+config
+device-alias database
+device-alias name s_75MGF60_I0040 pwwn 50:05:07:63:0B:04:11:C1
+device-alias name s_75MGF60_I0240 pwwn 50:05:07:63:0B:14:11:C1
+device-alias name s_75MFK40_I0040 pwwn 50:05:07:63:0B:04:11:23
+device-alias name s_75MFK40_I0240 pwwn 50:05:07:63:0B:14:11:23
+device-alias commit
+
+### ZONE COMMANDS FOR OPEN SYSTEM FABA
+zone name sz_75MGF60_I0040_75MFK40_I0040 vsan 53
+member device-alias s_75MGF60_I0040 both
+member device-alias s_75MFK40_I0040 both
+zone name sz_75MGF60_I0240_75MFK40_I0240 vsan 53
+member device-alias s_75MGF60_I0240 both
+member device-alias s_75MFK40_I0240 both
+
+### ZONESET COMMANDS FOR OPEN SYSTEM FABA
+zoneset name zs_VSAN53 vsan 53
+member sz_75MGF60_I0040_75MFK40_I0040
+member sz_75MGF60_I0240_75MFK40_I0240
+zoneset activate name zs_VSAN53 vsan 53
+zone commit vsan 53
+
+copy run start
+
+####################################################################
+#                         CISCO CHEATSHEET                         #
+####################################################################
+### SHOW ZONING WITH "*" ON MEMBERS THAT ARE LOGGED INTO THE FABRIC
+  show zoneset active
+### SHOW ALL LOGGED-IN WWPNS AND ASSOCIATED DEVICE-ALIASES
+  show flogi database
+### SHOW PENDING DIFF FOR ZONING THAT HAS NOT BEEN COMMITTED
+  show zone pending-diff vsan xx
+### SHOW DEVICE-ALIAS MODE
+  show device-alias status
+### SET DEVICE-ALIAS TO ENHANCED MODE
+  device-alias mode enhanced

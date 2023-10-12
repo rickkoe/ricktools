@@ -1,0 +1,23 @@
+### MKHOST COMMANDS FOR LEXINGTON ORANGE FS9500
+svctask mkhost -fcwwpn c050760b7ba50000:c050760b7ba50002:c050760b7ba50004:c050760b7ba50006 -force -name PRD03B_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b7ba50008:c050760b7ba5000a:c050760b7ba5000c:c050760b7ba5000e -force -name PRD03B_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b7ba50010:c050760b7ba50012:c050760b7ba50014:c050760b7ba50016 -force -name PRD03B_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b7ba50028:c050760b7ba5002a:c050760b7ba5002c:c050760b7ba5002e -force -name PRD03B_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b7ba50018:c050760b7ba5001a:c050760b7ba5001c:c050760b7ba5001e -force -name PRD03B_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b7ba50020:c050760b7ba50022:c050760b7ba50024:c050760b7ba50026 -force -name PRD03B_BEN_02 -protocol scsi -type generic
+
+### MKVDISK COMMANDS FOR LEXINGTON ORANGE FS9500
+for ((i=0;i<=73;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03B_BEN_$i -size 200 -unit gb; done
+for ((i=0;i<=463;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03B_CLM_$i -size 200 -unit gb; done
+for ((i=0;i<=51;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03B_sys_$i -size 200 -unit gb; done
+
+### MKVDISKHOSTMAP COMMANDS FOR LEXINGTON ORANGE FS9500
+for ((i=0;i<=36;i++)); do svctask mkvdiskhostmap -force -host PRD03B_BEN_01 PRD03B_BEN_$i; done
+for ((i=37;i<=73;i++)); do svctask mkvdiskhostmap -force -host PRD03B_BEN_02 PRD03B_BEN_$i; done
+for ((i=0;i<=115;i++)); do svctask mkvdiskhostmap -force -host PRD03B_CLM_01 PRD03B_CLM_$i; done
+for ((i=116;i<=231;i++)); do svctask mkvdiskhostmap -force -host PRD03B_CLM_02 PRD03B_CLM_$i; done
+for ((i=232;i<=347;i++)); do svctask mkvdiskhostmap -force -host PRD03B_CLM_03 PRD03B_CLM_$i; done
+for ((i=348;i<=463;i++)); do svctask mkvdiskhostmap -force -host PRD03B_CLM_04 PRD03B_CLM_$i; done
+for ((i=0;i<=16;i++)); do svctask mkvdiskhostmap -force -host PRD03B_sys_01 PRD03B_sys_$i; done
+for ((i=17;i<=33;i++)); do svctask mkvdiskhostmap -force -host PRD03B_sys_02 PRD03B_sys_$i; done
+for ((i=34;i<=51;i++)); do svctask mkvdiskhostmap -force -host PRD03B_sys_03 PRD03B_sys_$i; done

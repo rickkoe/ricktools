@@ -1,0 +1,145 @@
+
+
+### MKVDISKHOSTMAP COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdiskhostmap -force -host PRD03A_BEN_01 PRD03A_BEN_$i; done
+for ((i=0;i<=76;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_01 PRD03A_CLM_$i; done
+for ((i=77;i<=153;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_02 PRD03A_CLM_$i; done
+for ((i=154;i<=231;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_03 PRD03A_CLM_$i; done
+for ((i=232;i<=308;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_04 PRD03A_CLM_$i; done
+for ((i=309;i<=385;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_05 PRD03A_CLM_$i; done
+for ((i=386;i<=462;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_06 PRD03A_CLM_$i; done
+for ((i=0;i<=16;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_01 PRD03A_sys_$i; done
+for ((i=17;i<=33;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_02 PRD03A_sys_$i; done
+for ((i=34;i<=51;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_03 PRD03A_sys_$i; done
+
+### MKVDISKHOSTMAP COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdiskhostmap -force -host PRD03A_BEN_01 PRD03A_BEN_$i; done
+for ((i=0;i<=76;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_01 PRD03A_CLM_$i; done
+for ((i=77;i<=153;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_02 PRD03A_CLM_$i; done
+for ((i=154;i<=231;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_03 PRD03A_CLM_$i; done
+for ((i=232;i<=308;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_04 PRD03A_CLM_$i; done
+for ((i=309;i<=385;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_05 PRD03A_CLM_$i; done
+for ((i=386;i<=462;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_06 PRD03A_CLM_$i; done
+for ((i=0;i<=16;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_01 PRD03A_sys_$i; done
+for ((i=17;i<=33;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_02 PRD03A_sys_$i; done
+for ((i=34;i<=51;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_03 PRD03A_sys_$i; done
+
+### MKVDISKHOSTMAP COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdiskhostmap -force -host PRD03A_BEN_01 PRD03A_BEN_$i; done
+for ((i=0;i<=76;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_01 PRD03A_CLM_$i; done
+for ((i=77;i<=153;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_02 PRD03A_CLM_$i; done
+for ((i=154;i<=231;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_03 PRD03A_CLM_$i; done
+for ((i=232;i<=308;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_04 PRD03A_CLM_$i; done
+for ((i=309;i<=385;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_05 PRD03A_CLM_$i; done
+for ((i=386;i<=462;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_06 PRD03A_CLM_$i; done
+for ((i=0;i<=16;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_01 PRD03A_sys_$i; done
+for ((i=17;i<=33;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_02 PRD03A_sys_$i; done
+for ((i=34;i<=51;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_03 PRD03A_sys_$i; done
+
+### MKVDISKHOSTMAP COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdiskhostmap -force -host PRD03A_BEN_01 PRD03A_BEN_$i; done
+for ((i=0;i<=76;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_01 PRD03A_CLM_$i; done
+for ((i=77;i<=153;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_02 PRD03A_CLM_$i; done
+for ((i=154;i<=231;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_03 PRD03A_CLM_$i; done
+for ((i=232;i<=308;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_04 PRD03A_CLM_$i; done
+for ((i=309;i<=385;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_05 PRD03A_CLM_$i; done
+for ((i=386;i<=462;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_06 PRD03A_CLM_$i; done
+for ((i=0;i<=16;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_01 PRD03A_sys_$i; done
+for ((i=17;i<=33;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_02 PRD03A_sys_$i; done
+for ((i=34;i<=51;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_03 PRD03A_sys_$i; done
+
+### MKVDISK COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_BEN_$i -size 200 -unit gb; done
+for ((i=0;i<=463;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_CLM_$i -size 200 -unit gb; done
+for ((i=0;i<=51;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_sys_$i -size 200 -unit gb; done
+
+### MKVDISKHOSTMAP COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdiskhostmap -force -host PRD03A_BEN_01 PRD03A_BEN_$i; done
+for ((i=0;i<=76;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_01 PRD03A_CLM_$i; done
+for ((i=77;i<=153;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_02 PRD03A_CLM_$i; done
+for ((i=154;i<=231;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_03 PRD03A_CLM_$i; done
+for ((i=232;i<=308;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_04 PRD03A_CLM_$i; done
+for ((i=309;i<=385;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_05 PRD03A_CLM_$i; done
+for ((i=386;i<=462;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_06 PRD03A_CLM_$i; done
+for ((i=0;i<=16;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_01 PRD03A_sys_$i; done
+for ((i=17;i<=33;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_02 PRD03A_sys_$i; done
+for ((i=34;i<=51;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_03 PRD03A_sys_$i; done
+
+### MKVDISK COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_BEN_$i -size 200 -unit gb; done
+for ((i=0;i<=463;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_CLM_$i -size 200 -unit gb; done
+for ((i=0;i<=51;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_sys_$i -size 200 -unit gb; done
+
+### MKVDISKHOSTMAP COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdiskhostmap -force -host PRD03A_BEN_01 PRD03A_BEN_$i; done
+for ((i=0;i<=76;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_01 PRD03A_CLM_$i; done
+for ((i=77;i<=153;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_02 PRD03A_CLM_$i; done
+for ((i=154;i<=231;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_03 PRD03A_CLM_$i; done
+for ((i=232;i<=308;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_04 PRD03A_CLM_$i; done
+for ((i=309;i<=385;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_05 PRD03A_CLM_$i; done
+for ((i=386;i<=462;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_06 PRD03A_CLM_$i; done
+for ((i=0;i<=16;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_01 PRD03A_sys_$i; done
+for ((i=17;i<=33;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_02 PRD03A_sys_$i; done
+for ((i=34;i<=51;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_03 PRD03A_sys_$i; done
+
+### MKVDISK COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_BEN_$i -size 200 -unit gb; done
+for ((i=0;i<=463;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_CLM_$i -size 200 -unit gb; done
+for ((i=0;i<=51;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_sys_$i -size 200 -unit gb; done
+
+### MKVDISKHOSTMAP COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdiskhostmap -force -host PRD03A_BEN_01 PRD03A_BEN_$i; done
+for ((i=0;i<=76;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_01 PRD03A_CLM_$i; done
+for ((i=77;i<=153;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_02 PRD03A_CLM_$i; done
+for ((i=154;i<=231;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_03 PRD03A_CLM_$i; done
+for ((i=232;i<=308;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_04 PRD03A_CLM_$i; done
+for ((i=309;i<=385;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_05 PRD03A_CLM_$i; done
+for ((i=386;i<=462;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_06 PRD03A_CLM_$i; done
+for ((i=0;i<=16;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_01 PRD03A_sys_$i; done
+for ((i=17;i<=33;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_02 PRD03A_sys_$i; done
+for ((i=34;i<=51;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_03 PRD03A_sys_$i; done
+
+### MKVDISK COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_BEN_$i -size 200 -unit gb; done
+for ((i=0;i<=463;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_CLM_$i -size 200 -unit gb; done
+for ((i=0;i<=51;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_sys_$i -size 200 -unit gb; done
+
+### MKVDISKHOSTMAP COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdiskhostmap -force -host PRD03A_BEN_01 PRD03A_BEN_$i; done
+for ((i=0;i<=115;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_01 PRD03A_CLM_$i; done
+for ((i=116;i<=231;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_02 PRD03A_CLM_$i; done
+for ((i=232;i<=347;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_03 PRD03A_CLM_$i; done
+for ((i=348;i<=463;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_04 PRD03A_CLM_$i; done
+for ((i=0;i<=16;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_01 PRD03A_sys_$i; done
+for ((i=17;i<=33;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_02 PRD03A_sys_$i; done
+for ((i=34;i<=51;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_03 PRD03A_sys_$i; done
+
+### MKVDISK COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_BEN_$i -size 200 -unit gb; done
+for ((i=0;i<=463;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_CLM_$i -size 200 -unit gb; done
+for ((i=0;i<=51;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_sys_$i -size 200 -unit gb; done
+
+### MKVDISKHOSTMAP COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdiskhostmap -force -host PRD03A_BEN_01 PRD03A_BEN_$i; done
+for ((i=0;i<=115;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_01 PRD03A_CLM_$i; done
+for ((i=116;i<=231;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_02 PRD03A_CLM_$i; done
+for ((i=232;i<=347;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_03 PRD03A_CLM_$i; done
+for ((i=348;i<=463;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_04 PRD03A_CLM_$i; done
+for ((i=0;i<=16;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_01 PRD03A_sys_$i; done
+for ((i=17;i<=33;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_02 PRD03A_sys_$i; done
+for ((i=34;i<=51;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_03 PRD03A_sys_$i; done
+
+### MKVDISK COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_BEN_$i -size 200 -unit gb; done
+for ((i=0;i<=463;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_CLM_$i -size 200 -unit gb; done
+for ((i=0;i<=51;i++)); do svctask mkvdisk -mdiskgrp 0 -name PRD03A_sys_$i -size 200 -unit gb; done
+
+### MKVDISKHOSTMAP COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=73;i++)); do svctask mkvdiskhostmap -force -host PRD03A_BEN_01 PRD03A_BEN_$i; done
+for ((i=0;i<=115;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_01 PRD03A_CLM_$i; done
+for ((i=116;i<=231;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_02 PRD03A_CLM_$i; done
+for ((i=232;i<=347;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_03 PRD03A_CLM_$i; done
+for ((i=348;i<=463;i++)); do svctask mkvdiskhostmap -force -host PRD03A_CLM_04 PRD03A_CLM_$i; done
+for ((i=0;i<=16;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_01 PRD03A_sys_$i; done
+for ((i=17;i<=33;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_02 PRD03A_sys_$i; done
+for ((i=34;i<=51;i++)); do svctask mkvdiskhostmap -force -host PRD03A_sys_03 PRD03A_sys_$i; done

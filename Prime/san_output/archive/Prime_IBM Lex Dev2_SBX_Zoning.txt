@@ -1,0 +1,18 @@
+### ALIAS COMMANDS FOR IBM LEX DEV2
+config
+device-alias database
+device-alias name APPDEV01_sys_01b pwwn C0:50:76:0B:0E:CB:00:30
+device-alias name APPDEV01_sys_02b pwwn C0:50:76:0B:0E:CB:00:32
+device-alias name APPDEV01_sys_03b pwwn C0:50:76:0B:0E:CB:00:9C
+device-alias name APPDEV01_sys_04b pwwn C0:50:76:0B:0E:CB:00:A0
+device-alias name DEV02B_sys_01b pwwn C0:50:76:0B:0E:CB:00:78
+device-alias name DEV02B_sys_02b pwwn C0:50:76:0B:0E:CB:00:7A
+device-alias name DEV02B_sys_03b pwwn C0:50:76:0B:0E:CB:00:6C
+device-alias name DEV02B_sys_04b pwwn C0:50:76:0B:0E:CB:00:7E
+device-alias name DEV02B_sys_05b pwwn C0:50:76:0B:0E:CB:00:80
+device-alias name DEV02B_sys_06b pwwn C0:50:76:0B:0E:CB:00:82
+device-alias name DEV02B_sys_07b pwwn C0:50:76:0B:0E:CB:00:84
+device-alias name DEV02B_sys_08b pwwn C0:50:76:0B:0E:CB:00:76
+device-alias name SBX01B_1B_IASP_01b pwwn C0:50:76:0B:0E:CB:00:1A
+device-alias name SBX01B_sys_01b pwwn C0:50:76:0B:0E:CB:00:18
+device-alias commit

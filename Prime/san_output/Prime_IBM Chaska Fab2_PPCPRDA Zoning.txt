@@ -1,0 +1,47 @@
+### ALIAS COMMANDS FOR IBM CHASKA FAB2
+config
+device-alias database
+device-alias name PPCPRDA_sys_01b pwwn c0:50:76:0b:7b:a9:00:cc
+device-alias name PPCPRDA_sys_02b pwwn c0:50:76:0b:7b:a9:00:d4
+device-alias name PPCPRDA_iasp_01b pwwn c0:50:76:0b:7b:a9:00:fc
+device-alias name PPCPRDA_iasp_02b pwwn c0:50:76:0b:7b:a9:01:04
+device-alias name PPCPRDA_iasp_03b pwwn c0:50:76:0b:7b:a9:01:0c
+device-alias name PPCPRDA_iasp_04b pwwn c0:50:76:0b:7b:a9:01:14
+device-alias name PPCPRDA_iasp_05b pwwn c0:50:76:0b:7b:a9:01:1c
+device-alias name PPCPRDA_iasp_06b pwwn c0:50:76:0b:7b:a9:01:24
+device-alias name PPCPRDA_iasp_07b pwwn c0:50:76:0b:7b:a9:01:2c
+device-alias name PPCPRDA_iasp_08b pwwn c0:50:76:0b:7b:a9:01:34
+device-alias name PPCPRDA_iasp_09b pwwn c0:50:76:0b:7b:a9:01:3c
+device-alias name PPCPRDA_iasp_10b pwwn c0:50:76:0b:7b:a9:01:44
+device-alias name PPCPRDA_iasp_11b pwwn c0:50:76:0b:7b:a9:01:4c
+device-alias name PPCPRDA_iasp_12b pwwn c0:50:76:0b:7b:a9:01:54
+device-alias commit
+
+### ZONE COMMANDS FOR IBM CHASKA FAB2
+zone name sz_75MFK40_I0100 vsan 76
+member device-alias PPCPRDA_sys_01b init
+member device-alias PPCPRDA_iasp_05b init
+member device-alias PPCPRDA_iasp_11b init
+zone name sz_75MFK40_I0102 vsan 76
+member device-alias PPCPRDA_iasp_02b init
+member device-alias PPCPRDA_iasp_08b init
+zone name sz_75MFK40_I0110 vsan 76
+member device-alias PPCPRDA_sys_02b init
+member device-alias PPCPRDA_iasp_06b init
+member device-alias PPCPRDA_iasp_12b init
+zone name sz_75MFK40_I0112 vsan 76
+member device-alias PPCPRDA_iasp_03b init
+member device-alias PPCPRDA_iasp_09b init
+zone name sz_75MFK40_I0130 vsan 76
+member device-alias PPCPRDA_iasp_01b init
+member device-alias PPCPRDA_iasp_07b init
+zone name sz_75MFK40_I0132 vsan 76
+member device-alias PPCPRDA_iasp_04b init
+member device-alias PPCPRDA_iasp_10b init
+
+### ZONESET COMMANDS FOR IBM CHASKA FAB2
+zoneset activate name zs_VSAN76 vsan 76
+show zone pending-diff vsan 76
+zone commit vsan 76
+
+copy run start

@@ -1,0 +1,8 @@
+### ALIAS COMMANDS FOR OPEN SYSTEM FABA
+config
+device-alias database
+device-alias name s_75MGF60_I0040 pwwn 50:05:07:63:0B:04:11:C1
+device-alias name s_75MGF60_I0240 pwwn 50:05:07:63:0B:14:11:C1
+device-alias name s_75MFK40_I0040 pwwn 50:05:07:63:0B:04:11:23
+device-alias name s_75MFK40_I0240 pwwn 50:05:07:63:0B:14:11:23
+device-alias commit

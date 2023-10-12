@@ -1,0 +1,5 @@
+### ALIAS COMMANDS FOR IBM LEX FAB2
+config
+device-alias database
+device-alias name APPDEV01_sys_01b pwwn C0:50:76:0B:0E:CB:00:30
+device-alias commit

@@ -1,0 +1,10 @@
+### ALIAS COMMANDS FOR IBM LEX FAB3
+config
+device-alias database
+device-alias name PRD03B_CLM_new_01c pwwn c0:50:76:0b:7b:a5:00:04
+device-alias name PRD03B_CLM_new_02c pwwn c0:50:76:0b:7b:a5:00:0c
+device-alias name PRD03B_CLM_new_03c pwwn c0:50:76:0b:7b:a5:00:14
+device-alias name PRD03B_CLM_new_04c pwwn c0:50:76:0b:7b:a5:00:2c
+device-alias name PRD03B_BEN_new_01c pwwn c0:50:76:0b:7b:a5:00:1c
+device-alias name PRD03B_BEN_new_02c pwwn c0:50:76:0b:7b:a5:00:24
+device-alias commit

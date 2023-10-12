@@ -1,0 +1,84 @@
+### ALIAS COMMANDS FOR IBM LEX FAB2
+config
+device-alias database
+device-alias name APPDEV01_sys_01b pwwn C0:50:76:0B:0E:CB:00:30
+device-alias name APPDEV01_sys_02b pwwn C0:50:76:0B:0E:CB:00:32
+device-alias name APPDEV01_sys_03b pwwn C0:50:76:0B:0E:CB:00:9C
+device-alias name APPDEV01_sys_04b pwwn C0:50:76:0B:0E:CB:00:A0
+device-alias name DEV02B_sys_01b pwwn C0:50:76:0B:0E:CB:00:78
+device-alias name DEV02B_sys_02b pwwn C0:50:76:0B:0E:CB:00:7A
+device-alias name DEV02B_sys_03b pwwn C0:50:76:0B:0E:CB:00:6C
+device-alias name DEV02B_sys_04b pwwn C0:50:76:0B:0E:CB:00:7E
+device-alias name DEV02B_sys_05b pwwn C0:50:76:0B:0E:CB:00:80
+device-alias name DEV02B_sys_06b pwwn C0:50:76:0B:0E:CB:00:82
+device-alias name DEV02B_sys_07b pwwn C0:50:76:0B:0E:CB:00:84
+device-alias name DEV02B_sys_08b pwwn C0:50:76:0B:0E:CB:00:76
+device-alias name SBX01B_1B_IASP_01b pwwn C0:50:76:0B:0E:CB:00:1A
+device-alias name SBX01B_sys_01b pwwn C0:50:76:0B:0E:CB:00:18
+device-alias name s_75KHP70_I0230 pwwn 50:05:07:63:09:13:12:39
+device-alias name s_75KHP70_I0330 pwwn 50:05:07:63:09:1b:12:39
+device-alias name s_75KHP70_I0201 pwwn 50:05:07:63:09:10:52:39
+device-alias name s_75KHP70_I0301 pwwn 50:05:07:63:09:18:52:39
+device-alias name s_75KHP70_I0200 pwwn 50:05:07:63:09:10:12:39
+device-alias name s_75KHP70_I0300 pwwn 50:05:07:63:09:18:12:39
+device-alias name s_75KHP70_I0231 pwwn 50:05:07:63:09:13:52:39
+device-alias name s_75KHP70_I0331 pwwn 50:05:07:63:09:1b:52:39
+device-alias name s_75KHP70_I0202 pwwn 50:05:07:63:09:10:92:39
+device-alias name s_75KHP70_I0302 pwwn 50:05:07:63:09:18:92:39
+device-alias commit
+
+### ZONE COMMANDS FOR IBM LEX FAB2
+zone name sz_75KHP70_I0230 vsan 96
+member device-alias s_75KHP70_I0230 target
+member device-alias DEV02B_sys_01b init
+member device-alias SBX01B_sys_01b init
+zone name sz_75KHP70_I0330 vsan 96
+member device-alias s_75KHP70_I0330 target
+member device-alias DEV02B_sys_02b init
+member device-alias SBX01B_1B_IASP_01b init
+zone name sz_75KHP70_I0231 vsan 96
+member device-alias s_75KHP70_I0231 target
+member device-alias APPDEV01_sys_03b init
+member device-alias DEV02B_sys_05b init
+zone name sz_75KHP70_I0331 vsan 96
+member device-alias s_75KHP70_I0331 target
+member device-alias APPDEV01_sys_04b init
+member device-alias DEV02B_sys_06b init
+zone name sz_75KHP70_I0200 vsan 96
+member device-alias s_75KHP70_I0200 target
+member device-alias APPDEV01_sys_01b init
+zone name sz_75KHP70_I0300 vsan 96
+member device-alias s_75KHP70_I0300 target
+member device-alias APPDEV01_sys_02b init
+zone name sz_75KHP70_I0201 vsan 96
+member device-alias s_75KHP70_I0201 target
+member device-alias DEV02B_sys_03b init
+zone name sz_75KHP70_I0301 vsan 96
+member device-alias s_75KHP70_I0301 target
+member device-alias DEV02B_sys_04b init
+zone name sz_75KHP70_I0202 vsan 96
+member device-alias s_75KHP70_I0202 target
+member device-alias DEV02B_sys_07b init
+zone name sz_75KHP70_I0302 vsan 96
+member device-alias s_75KHP70_I0302 target
+member device-alias DEV02B_sys_08b init
+
+### ZONESET COMMANDS FOR IBM LEX FAB2
+zoneset activate name zs_VSAN96 vsan 96
+zone commit vsan 96
+
+copy run start
+
+####################################################################
+#                         CISCO CHEATSHEET                         #
+####################################################################
+### SHOW ZONING WITH "*" ON MEMBERS THAT ARE LOGGED INTO THE FABRIC
+  show zoneset active
+### SHOW ALL LOGGED-IN WWPNS AND ASSOCIATED DEVICE-ALIASES
+  show flogi database
+### SHOW PENDING DIFF FOR ZONING THAT HAS NOT BEEN COMMITTED
+  show zone pending-diff vsan xx
+### SHOW DEVICE-ALIAS MODE
+  show device-alias status
+### SET DEVICE-ALIAS TO ENHANCED MODE
+  device-alias mode enhanced

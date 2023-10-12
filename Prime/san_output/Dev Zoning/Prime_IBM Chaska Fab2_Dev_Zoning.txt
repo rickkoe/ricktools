@@ -1,0 +1,56 @@
+### ALIAS COMMANDS FOR IBM CHASKA FAB2
+config
+device-alias database
+device-alias name SBX01A_1A_IASP_01b pwwn C0:50:76:0B:0F:05:00:02
+device-alias name SBX01A_sys_01b pwwn C0:50:76:0B:0F:05:00:00
+device-alias name SBX01ABK_1A_IASP_01b pwwn C0:50:76:0B:0F:05:00:1A
+device-alias name SBX01ABK_sys_01b pwwn C0:50:76:0B:0F:05:00:18
+device-alias name s_75KDR90_I0330 pwwn 50:05:07:63:09:1b:13:8d
+device-alias name s_75KDR90_I0331 pwwn 50:05:07:63:09:1b:53:8d
+device-alias name s_75KDR90_I0332 pwwn 50:05:07:63:09:1b:93:8d
+device-alias name s_75KDR90_I0340 pwwn 50:05:07:63:09:1c:13:8d
+device-alias name s_75KDR90_I0341 pwwn 50:05:07:63:09:1c:53:8d
+device-alias name s_75KDR90_I0342 pwwn 50:05:07:63:09:1c:93:8d
+device-alias commit
+
+### ZONE COMMANDS FOR IBM CHASKA FAB2
+zone name sz_75KDR90_I0330 vsan 76
+member device-alias s_75KDR90_I0330 target
+member device-alias SBX01A_sys_01b init
+zone name sz_75KDR90_I0332 vsan 76
+member device-alias s_75KDR90_I0332 target
+member device-alias SBX01ABK_sys_01b init
+zone name sz_75KDR90_I0340 vsan 76
+member device-alias s_75KDR90_I0340 target
+member device-alias SBX01A_1A_IASP_01b init
+member device-alias SBX01ABK_1A_IASP_01b init
+zone name sz_78E37VE_port2 vsan 76
+member device-alias SBX01A_sys_01b init
+member device-alias SBX01ABK_sys_01b init
+zone name sz_78E37VE_port10 vsan 76
+member device-alias SBX01A_1A_IASP_01b init
+member device-alias SBX01ABK_1A_IASP_01b init
+
+### ZONESET COMMANDS FOR IBM CHASKA FAB2
+zoneset name zs_VSAN76 vsan 76
+member sz_75KDR90_I0330
+member sz_75KDR90_I0332
+member sz_75KDR90_I0340
+zoneset activate name zs_VSAN76 vsan 76
+zone commit vsan 76
+
+copy run start
+
+####################################################################
+#                         CISCO CHEATSHEET                         #
+####################################################################
+### SHOW ZONING WITH "*" ON MEMBERS THAT ARE LOGGED INTO THE FABRIC
+  show zoneset active
+### SHOW ALL LOGGED-IN WWPNS AND ASSOCIATED DEVICE-ALIASES
+  show flogi database
+### SHOW PENDING DIFF FOR ZONING THAT HAS NOT BEEN COMMITTED
+  show zone pending-diff vsan xx
+### SHOW DEVICE-ALIAS MODE
+  show device-alias status
+### SET DEVICE-ALIAS TO ENHANCED MODE
+  device-alias mode enhanced

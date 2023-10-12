@@ -1,0 +1,37 @@
+### MKHOST COMMANDS FOR LEXINGTON ORANGE FS9500
+svctask mkhost -fcwwpn C050760B0ECB0028:C050760B0ECB001A -force -name SBX01B_1B_IASP_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn C050760B0ECB0020:C050760B0ECB0018 -force -name SBX01B_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b0ecb00a2:c050760b0ecb00a4 -force -name DEV02B_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b0ecb00a6:c050760b0ecb00a8 -force -name DEV02B_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b0ecb00aa:c050760b0ecb00ac -force -name DEV02B_sys_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b0ecb00ae:c050760b0ecb00b0 -force -name DEV02B_sys_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b0ecb00b2:c050760b0ecb00b4 -force -name DEV02B_sys_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b0ecb00b6:c050760b0ecb00b8 -force -name DEV02B_sys_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b0ecb00ba:c050760b0ecb00bc -force -name DEV02B_sys_07 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b0ecb00be:c050760b0ecb00c0 -force -name DEV02B_sys_08 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b0ecb00c2:c050760b0ecb00c4 -force -name APPDEV01_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b0ecb00c6:c050760b0ecb00c8 -force -name APPDEV01_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b0ecb00ca:c050760b0ecb00cc -force -name APPDEV01_sys_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760b0ecb00ce:c050760b0ecb00d0 -force -name APPDEV01_sys_04 -protocol scsi -type generic
+
+### MKVDISK COMMANDS FOR LEXINGTON ORANGE FS9500
+for ((i=0;i<=693;i++)); do j=$(printf "%01d" "$i"); svctask mkvdisk -mdiskgrp 0 -name DEV02B_sys$j -size 200 -unit gb; done
+for ((i=0;i<=313;i++)); do j=$(printf "%01d" "$i"); svctask mkvdisk -mdiskgrp 0 -name APPDEV01_sys$j -size 200 -unit gb; done
+for ((i=0;i<=9;i++)); do j=$(printf "%01d" "$i"); svctask mkvdisk -mdiskgrp 0 -name SBX01B_sys$j -size 200 -unit gb; done
+for ((i=0;i<=5;i++)); do j=$(printf "%01d" "$i"); svctask mkvdisk -mdiskgrp 0 -name SBX01B_1B_IASP$j -size 200 -unit gb; done
+
+### MKVDISKHOSTMAP COMMANDS FOR LEXINGTON ORANGE FS9500
+for ((i=0;i<=85;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host DEV02B_sys_01 DEV02B_sys_$j; done
+for ((i=86;i<=172;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host DEV02B_sys_02 DEV02B_sys_$j; done
+for ((i=173;i<=259;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host DEV02B_sys_03 DEV02B_sys_$j; done
+for ((i=260;i<=346;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host DEV02B_sys_04 DEV02B_sys_$j; done
+for ((i=347;i<=432;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host DEV02B_sys_05 DEV02B_sys_$j; done
+for ((i=433;i<=519;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host DEV02B_sys_06 DEV02B_sys_$j; done
+for ((i=520;i<=606;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host DEV02B_sys_07 DEV02B_sys_$j; done
+for ((i=607;i<=693;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host DEV02B_sys_08 DEV02B_sys_$j; done
+for ((i=0;i<=77;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host APPDEV01_sys_01 APPDEV01_sys_$j; done
+for ((i=78;i<=156;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host APPDEV01_sys_02 APPDEV01_sys_$j; done
+for ((i=157;i<=234;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host APPDEV01_sys_03 APPDEV01_sys_$j; done
+for ((i=235;i<=313;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host APPDEV01_sys_04 APPDEV01_sys_$j; done
+for ((i=0;i<=9;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host SBX01B_sys_01 SBX01B_sys_$j; done
+for ((i=0;i<=5;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host SBX01B_1B_IASP_01 SBX01B_1B_IASP_$j; done

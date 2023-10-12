@@ -1,0 +1,69 @@
+### ALIAS COMMANDS FOR IBM LEX FAB4
+config
+device-alias database
+device-alias name DEV01B_IASP_new_01d pwwn c0:50:76:0b:7c:e7:02:a4
+device-alias name DEV01B_IASP_new_02d pwwn c0:50:76:0b:7c:e7:02:ac
+device-alias name DEV01B_IASP_new_03d pwwn c0:50:76:0b:7c:e7:02:b4
+device-alias name DEV01B_IASP_new_04d pwwn c0:50:76:0b:7c:e7:02:bc
+device-alias name DEV01B_IASP_new_05d pwwn c0:50:76:0b:7c:e7:02:c4
+device-alias name DEV01B_IASP_new_06d pwwn c0:50:76:0b:7c:e7:02:cc
+device-alias name DEV01B_IASP_new_07d pwwn c0:50:76:0b:7c:e7:02:d4
+device-alias name DEV01B_IASP_new_08d pwwn c0:50:76:0b:7c:e7:02:dc
+device-alias commit
+
+### ZONE COMMANDS FOR IBM LEX FAB4
+zone name sz_78E4R35_port8 vsan 98
+member device-alias s_78E4R35_n1p8 target
+member device-alias s_78E4R35_n2p8 target
+member device-alias PRD03B_sys_01d init
+member device-alias PRD03B_CLM_01d init
+member device-alias PRD03B_CLM_04d init
+member device-alias PRD03B_BEN_01d init
+member device-alias DEV01B_IASP_01d init
+member device-alias DEV01B_IASP_04d init
+member device-alias DEV01B_IASP_07d init
+member device-alias DEV01B_IASP_new_01d init
+member device-alias DEV01B_IASP_new_04d init
+member device-alias DEV01B_IASP_new_07d init
+zone name sz_78E4R35_port16 vsan 98
+member device-alias s_78E4R35_n1p16 target
+member device-alias s_78E4R35_n2p16 target
+member device-alias PRD03B_sys_02d init
+member device-alias PRD03B_CLM_02d init
+member device-alias PRD03B_CLM_05d init
+member device-alias DEV01B_IASP_02d init
+member device-alias DEV01B_IASP_05d init
+member device-alias DEV01B_sys_01d init
+member device-alias DEV01B_IASP_new_02d init
+member device-alias DEV01B_IASP_new_05d init
+member device-alias DEV01B_IASP_new_08d init
+zone name sz_78E4R35_port24 vsan 98
+member device-alias s_78E4R35_n1p24 target
+member device-alias s_78E4R35_n2p24 target
+member device-alias PRD03B_sys_03d init
+member device-alias PRD03B_CLM_03d init
+member device-alias PRD03B_CLM_06d init
+member device-alias DEV01B_IASP_03d init
+member device-alias DEV01B_IASP_06d init
+member device-alias DEV01B_sys_02d init
+member device-alias DEV01B_IASP_new_03d init
+member device-alias DEV01B_IASP_new_06d init
+
+### ZONESET COMMANDS FOR IBM LEX FAB4
+zoneset activate name zs_VSAN98 vsan 98
+zone commit vsan 98
+copy run start
+
+####################################################################
+#                         CISCO CHEATSHEET                         #
+####################################################################
+### SHOW ZONING WITH "*" ON MEMBERS THAT ARE LOGGED INTO THE FABRIC
+  show zoneset active
+### SHOW ALL LOGGED-IN WWPNS AND ASSOCIATED DEVICE-ALIASES
+  show flogi database
+### SHOW PENDING DIFF FOR ZONING THAT HAS NOT BEEN COMMITTED
+  show zone pending-diff vsan xx
+### SHOW DEVICE-ALIAS MODE
+  show device-alias status
+### SET DEVICE-ALIAS TO ENHANCED MODE
+  device-alias mode enhanced

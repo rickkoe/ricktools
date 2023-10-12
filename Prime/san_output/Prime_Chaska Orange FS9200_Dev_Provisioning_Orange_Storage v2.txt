@@ -1,0 +1,20 @@
+### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn C050760B0F050010:C050760B0F050002 -force -name SBX01A_1A_IASP_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn C050760B0F050008:C050760B0F050000 -force -name SBX01A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn C050760B0F050028:C050760B0F05001A -force -name SBX01ABK_1A_IASP_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn C050760B0F050020:C050760B0F050018 -force -name SBX01ABK_sys_01 -protocol scsi -type generic
+
+### MKVDISK COMMANDS FOR CHASKA ORANGE FS9200
+for ((i=0;i<=9;i++)); do j=$(printf "%01d" "$i"); svctask mkvdisk -mdiskgrp 0 -name SBX01A_sys_$j -size 200 -unit gb; done
+for ((i=0;i<=5;i++)); do j=$(printf "%01d" "$i"); svctask mkvdisk -mdiskgrp 0 -name SBX01A_1A-IASP_$j -size 200 -unit gb; done
+for ((i=0;i<=9;i++)); do j=$(printf "%01d" "$i"); svctask mkvdisk -mdiskgrp 0 -name SBX01ABK_sys_$j -size 200 -unit gb; done
+for ((i=0;i<=5;i++)); do j=$(printf "%01d" "$i"); svctask mkvdisk -mdiskgrp 0 -name SBX01ABK_1A_IASP_$j -size 200 -unit gb; done
+
+### MKVDISKHOSTMAP COMMANDS FOR CHASKA ORANGE FS9200
+### SBX01A
+for ((i=0;i<=9;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host SBX01A_sys_01 SBX01A_sys_$j; done
+for ((i=0;i<=5;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host SBX01A_1A_IASP_01 SBX01A_1A-IASP_$j; done
+
+### SBX01ABK
+for ((i=0;i<=9;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host SBX01ABK_sys_01 SBX01ABK_sys_$j; done
+for ((i=0;i<=5;i++)); do j=$(printf "%01d" "$i"); svctask mkvdiskhostmap -force -host SBX01ABK_1A_IASP_01 SBX01ABK_1A_IASP_$j; done

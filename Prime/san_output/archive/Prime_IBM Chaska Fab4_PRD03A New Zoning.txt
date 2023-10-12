@@ -1,0 +1,40 @@
+### ALIAS COMMANDS FOR IBM CHASKA FAB4
+config
+device-alias database
+device-alias name PRD03A_CLM_new_01d pwwn c0:50:76:0b:7b:b4:00:06
+device-alias name PRD03A_CLM_new_02d pwwn c0:50:76:0b:7b:b4:00:0e
+device-alias name PRD03A_CLM_new_03d pwwn c0:50:76:0b:7b:b4:00:16
+device-alias name PRD03A_BEN_new_01d pwwn c0:50:76:0b:7b:b4:00:1e
+device-alias name PRD03A_BEN_new_02d pwwn c0:50:76:0b:7b:b4:00:26
+device-alias name PRD03A_CLM_new_04d pwwn c0:50:76:0b:7b:b4:00:2e
+device-alias commit
+
+### ZONE COMMANDS FOR IBM CHASKA FAB4
+zone name sz_78E37VE_port6 vsan 78
+member device-alias PRD03A_CLM_new_01d init
+member device-alias PRD03A_CLM_new_03d init
+member device-alias PRD03A_BEN_new_01d init
+zone name sz_78E37VE_port12 vsan 78
+member device-alias PRD03A_CLM_new_02d init
+member device-alias PRD03A_BEN_new_02d init
+member device-alias PRD03A_CLM_new_04d init
+
+### ZONESET COMMANDS FOR IBM CHASKA FAB4
+zoneset activate name zs_VSAN78 vsan 78
+zone commit vsan 78
+
+copy run start
+
+####################################################################
+#                         CISCO CHEATSHEET                         #
+####################################################################
+### SHOW ZONING WITH "*" ON MEMBERS THAT ARE LOGGED INTO THE FABRIC
+  show zoneset active
+### SHOW ALL LOGGED-IN WWPNS AND ASSOCIATED DEVICE-ALIASES
+  show flogi database
+### SHOW PENDING DIFF FOR ZONING THAT HAS NOT BEEN COMMITTED
+  show zone pending-diff vsan xx
+### SHOW DEVICE-ALIAS MODE
+  show device-alias status
+### SET DEVICE-ALIAS TO ENHANCED MODE
+  device-alias mode enhanced

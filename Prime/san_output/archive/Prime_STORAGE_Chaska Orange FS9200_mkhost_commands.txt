@@ -1,0 +1,151 @@
+### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic### MKHOST COMMANDS FOR CHASKA ORANGE FS9200
+svctask mkhost -fcwwpn c05076091509010e:c050760915090122:c050760915090144:c05076091509015a -force -name PRD03A_BEN_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090114:c050760915090128:c05076091509014c:c050760915090160 -force -name PRD03A_CLM_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090116:c05076091509012c:c05076091509014e:c050760915090162 -force -name PRD03A_CLM_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090118:c050760915090130:c050760915090150:c050760915090164 -force -name PRD03A_CLM_03 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509011a:c050760915090134:c050760915090152:c050760915090166 -force -name PRD03A_CLM_04 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902ce:c0507609150902d0:c0507609150902d2:c0507609150902d4 -force -name PRD03A_CLM_05 -protocol scsi -type generic
+svctask mkhost -fcwwpn c0507609150902d6:c0507609150902d8:c0507609150902da:c0507609150902dc -force -name PRD03A_CLM_06 -protocol scsi -type generic
+svctask mkhost -fcwwpn c050760915090108:c05076091509011c:c050760915090136:c050760915090154 -force -name PRD03A_sys_01 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010a:c05076091509011e:c05076091509013a:c050760915090156 -force -name PRD03A_sys_02 -protocol scsi -type generic
+svctask mkhost -fcwwpn c05076091509010c:c050760915090120:c05076091509013e:c050760915090158 -force -name PRD03A_sys_03 -protocol scsi -type generic

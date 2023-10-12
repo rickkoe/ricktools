@@ -1,0 +1,67 @@
+### ALIAS COMMANDS FOR IBM CHASKA FAB1
+config
+device-alias database
+device-alias name SBX01A_1A_IASP_01a pwwn C0:50:76:0B:0F:05:00:10
+device-alias name SBX01A_sys_01a pwwn C0:50:76:0B:0F:05:00:08
+device-alias name SBX01ABK_1A_IASP_01a pwwn C0:50:76:0B:0F:05:00:28
+device-alias name SBX01ABK_sys_01a pwwn C0:50:76:0B:0F:05:00:20
+device-alias name APPDEV01_sys_02a pwwn C0:50:76:0B:0E:CB:00:38
+device-alias name APPDEV01_sys_03a pwwn C0:50:76:0B:0E:CB:00:9A
+device-alias name APPDEV01_sys_04a pwwn C0:50:76:0B:0E:CB:00:9E
+device-alias name DEV02B_sys_01a pwwn C0:50:76:0B:0E:CB:00:68
+device-alias name DEV02B_sys_02a pwwn C0:50:76:0B:0E:CB:00:6A
+device-alias name DEV02B_sys_03a pwwn C0:50:76:0B:0E:CB:00:7C
+device-alias name DEV02B_sys_04a pwwn C0:50:76:0B:0E:CB:00:6E
+device-alias name DEV02B_sys_05a pwwn C0:50:76:0B:0E:CB:00:70
+device-alias name DEV02B_sys_06a pwwn C0:50:76:0B:0E:CB:00:72
+device-alias name DEV02B_sys_07a pwwn C0:50:76:0B:0E:CB:00:74
+device-alias name DEV02B_sys_08a pwwn C0:50:76:0B:0E:CB:00:88
+device-alias name SBX01B_1B_IASP_01a pwwn C0:50:76:0B:0E:CB:00:28
+device-alias name SBX01B_sys_01a pwwn C0:50:76:0B:0E:CB:00:20
+device-alias name s_75KDR90_I0230 pwwn 50:05:07:63:09:13:13:8d
+device-alias name s_75KDR90_I0231 pwwn 50:05:07:63:09:13:53:8d
+device-alias name s_75KDR90_I0232 pwwn 50:05:07:63:09:13:93:8d
+device-alias name s_75KDR90_I0240 pwwn 50:05:07:63:09:14:13:8d
+device-alias name s_75KDR90_I0241 pwwn 50:05:07:63:09:14:53:8d
+device-alias name s_75KDR90_I0242 pwwn 50:05:07:63:09:14:93:8d
+device-alias commit
+
+### ZONE COMMANDS FOR IBM CHASKA FAB1
+zone name sz_s_75KDR90_I0230 vsan 75
+member device-alias s_75KDR90_I0230 target
+member device-alias SBX01A_sys_01a init
+zone name sz_s_75KDR90_I0232 vsan 75
+member device-alias s_75KDR90_I0232 target
+member device-alias SBX01ABK_sys_01a init
+zone name sz_s_75KDR90_I0240 vsan 75
+member device-alias s_75KDR90_I0240 target
+member device-alias SBX01A_1A_IASP_01a init
+member device-alias SBX01ABK_1A_IASP_01a init
+zone name sz_78E37VE_port1 vsan 75
+member device-alias SBX01A_sys_01a init
+zone name sz_78E37VE_port9 vsan 75
+member device-alias SBX01A_1A_IASP_01a init
+
+### ZONESET COMMANDS FOR IBM CHASKA FAB1
+zoneset name zs_VSAN75 vsan 75
+member sz_s_75KDR90_I0230
+member sz_s_75KDR90_I0232
+member sz_s_75KDR90_I0240
+zoneset activate name zs_VSAN75 vsan 75
+zone commit vsan 75
+
+copy run start
+
+####################################################################
+#                         CISCO CHEATSHEET                         #
+####################################################################
+### SHOW ZONING WITH "*" ON MEMBERS THAT ARE LOGGED INTO THE FABRIC
+  show zoneset active
+### SHOW ALL LOGGED-IN WWPNS AND ASSOCIATED DEVICE-ALIASES
+  show flogi database
+### SHOW PENDING DIFF FOR ZONING THAT HAS NOT BEEN COMMITTED
+  show zone pending-diff vsan xx
+### SHOW DEVICE-ALIAS MODE
+  show device-alias status
+### SET DEVICE-ALIAS TO ENHANCED MODE
+  device-alias mode enhanced

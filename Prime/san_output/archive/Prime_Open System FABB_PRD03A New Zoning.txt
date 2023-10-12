@@ -1,0 +1,8 @@
+### ALIAS COMMANDS FOR OPEN SYSTEM FABB
+config
+device-alias database
+device-alias name s_75MGF60_I0140 pwwn 50:05:07:63:0B:0C:11:C1
+device-alias name s_75MGF60_I0340 pwwn 50:05:07:63:0B:1C:11:C1
+device-alias name s_75MFK40_I0140 pwwn 50:05:07:63:0B:0C:11:23
+device-alias name s_75MFK40_I0340 pwwn 50:05:07:63:0B:1C:11:23
+device-alias commit
